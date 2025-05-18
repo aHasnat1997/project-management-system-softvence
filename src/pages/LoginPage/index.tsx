@@ -15,6 +15,9 @@ import {
   FormMessage,
 } from "../../components/ui/form"
 import { Input } from "@/components/ui/input"
+import { useNavigate } from "react-router";
+import { Eye, EyeOff } from "lucide-react";
+import { useState } from "react";
 
 const formSchema = z.object({
   email: z.string().email().min(2),
@@ -22,6 +25,8 @@ const formSchema = z.object({
 })
 
 export default function LoginPage(): React.ReactNode {
+  const [isOpen, setIsOpen] = useState<boolean>(false)
+  const navigate = useNavigate();
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
     defaultValues: {
@@ -31,7 +36,8 @@ export default function LoginPage(): React.ReactNode {
   });
 
   function onSubmit(values: z.infer<typeof formSchema>) {
-    console.log(values)
+    console.log(values);
+    navigate('/dashboard');
   }
 
   return (
@@ -62,14 +68,30 @@ export default function LoginPage(): React.ReactNode {
                     <FormItem>
                       <FormLabel className="text-[#6B6B6B]">Password</FormLabel>
                       <FormControl>
-                        <Input {...field} className="w-[316px]" type="password" />
+                        <div className="relative">
+                          <Input {...field} className="w-[316px]" type={isOpen ? "text" : "password"} />
+                          <button
+                            className="absolute top-[6px] right-2 border-0 p-0"
+                            type="button"
+                            onClick={() => setIsOpen(!isOpen)}
+                          >
+                            {
+                              isOpen ? <Eye /> : <EyeOff />
+                            }
+                          </button>
+                        </div>
                       </FormControl>
                       <FormMessage />
                       <FormDescription className="text-end text-primary">Forgot Password?</FormDescription>
                     </FormItem>
                   )}
                 />
-                <Button type="submit" className="w-full">Log In</Button>
+                <Button
+                  type="submit"
+                  className="w-full"
+                >
+                  Log In
+                </Button>
               </form>
             </Form>
           </div>
