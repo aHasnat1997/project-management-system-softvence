@@ -6,6 +6,7 @@ import { Provider } from 'react-redux'
 import { persistor, store } from './redux/store'
 import { PersistGate } from 'redux-persist/integration/react'
 import AppRoutes from './routers'
+import { Toaster } from './components/ui/sonner'
 
 createRoot(document.getElementById('root')!).render(
   <StrictMode>
@@ -16,5 +17,6 @@ createRoot(document.getElementById('root')!).render(
         </BrowserRouter>
       </PersistGate>
     </Provider>
+    <Toaster position="top-center" />
   </StrictMode>,
 )

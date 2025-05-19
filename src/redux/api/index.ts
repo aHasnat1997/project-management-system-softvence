@@ -5,6 +5,12 @@ export const baseApi = createApi({
   baseQuery: fetchBaseQuery({
     baseUrl: import.meta.env.VITE_BASE_API_URL,
     credentials: 'include',
+    prepareHeaders: (headers) => {
+      const accessToken = '';
+      if (accessToken) headers.set("authorization", accessToken);
+
+      return headers;
+    }
   }),
   endpoints: () => ({}),
   tagTypes: []

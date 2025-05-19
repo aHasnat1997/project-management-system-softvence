@@ -3,6 +3,10 @@ import App from "../App";
 import LoginPage from "../pages/LoginPage";
 import MainLayout from "@/layouts/MainLayout";
 import Home from "@/pages/DashboardPages/Home";
+import ForgotPasswordPage from "@/pages/ForgotPasswordPage";
+import SetNewPasswordPage from "@/pages/SetNewPasswordPage";
+import ResetPasswordPage from "@/pages/ResetPasswordPage";
+import RegistrationPage from "@/pages/RegistrationPage";
 
 export default function AppRoutes() {
   return (
@@ -10,6 +14,10 @@ export default function AppRoutes() {
       <Routes>
         <Route index element={<App />} />
         <Route path="login" element={<LoginPage />} />
+        <Route path="forgot-password" element={<ForgotPasswordPage />} />
+        <Route path="set-new-password" element={<SetNewPasswordPage />} />
+        <Route path="reset-password" element={<ResetPasswordPage />} />
+        <Route path="reg" element={<RegistrationPage />} />
       </Routes>
 
       <Routes>
@@ -20,4 +28,4 @@ export default function AppRoutes() {
       </Routes>
     </>
   )
-}
+};
