@@ -19,6 +19,9 @@ import { Link, useNavigate } from "react-router";
 import { Eye, EyeOff } from "lucide-react";
 import { useState } from "react";
 import { toast } from "sonner";
+import { useAppDispatch } from "@/redux/hooks";
+import { storeUserInfo } from "@/redux/slices/authSlice";
+import { useUserLoginMutation } from "@/redux/endpoints/authApi";
 
 const formSchema = z.object({
   email: z.string().email().min(2),
@@ -26,7 +29,9 @@ const formSchema = z.object({
 })
 
 export default function LoginPage(): React.ReactNode {
-  const [isOpen, setIsOpen] = useState<boolean>(false)
+  const [userLogin, { isLoading, isSuccess, isError }] = useUserLoginMutation();
+  const dispatch = useAppDispatch();
+  const [isOpen, setIsOpen] = useState<boolean>(false);
   const navigate = useNavigate();
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
@@ -35,11 +40,24 @@ export default function LoginPage(): React.ReactNode {
       password: ""
     },
   });
+  // console.log({ isSuccess, isLoading, isError });
 
-  function onSubmit(values: z.infer<typeof formSchema>) {
-    console.log(values);
-    toast.success("Successfully login")
-    navigate('/dashboard');
+  async function onSubmit(values: z.infer<typeof formSchema>) {
+    try {
+      const { data } = await userLogin(values);
+      console.log(data);
+
+      if (data.success) {
+        console.log('hello');
+
+        dispatch(storeUserInfo(data.data.accessToken));
+        toast.success("Successfully login")
+        navigate('/dashboard');
+      }
+    } catch (error) {
+      console.error(error)
+      toast.error("Something went wrong")
+    }
   }
 
   return (
@@ -95,8 +113,13 @@ export default function LoginPage(): React.ReactNode {
                 <Button
                   type="submit"
                   className="w-full"
+                  disabled={isLoading || isSuccess}
                 >
-                  Log In
+                  {
+                    isLoading ? 'Loading...' :
+                      isError ? 'Error' :
+                        'Login'
+                  }
                 </Button>
               </form>
             </Form>

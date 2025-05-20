@@ -1,10 +1,10 @@
 import { createSlice } from "@reduxjs/toolkit";
 import { jwtDecode, type JwtPayload } from "jwt-decode";
-import type { TUser } from "../../types";
+import type { TJwtPayload } from "../../types";
 
 type TInitialState = {
   token: null | string;
-  user: null | TUser | JwtPayload;
+  user: null | TJwtPayload | JwtPayload;
 };
 
 const initialState: TInitialState = {

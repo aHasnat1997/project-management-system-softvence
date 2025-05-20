@@ -8,10 +8,14 @@ export const baseApi = createApi({
     prepareHeaders: (headers) => {
       const accessToken = '';
       if (accessToken) headers.set("authorization", accessToken);
+      headers.set("Content-Type", "application/json");
 
+      if (!(headers.get("Content-Type") === "multipart/form-data")) {
+        headers.set("Content-Type", "application/json");
+      }
       return headers;
     }
   }),
   endpoints: () => ({}),
-  tagTypes: []
+  tagTypes: ['auth']
 });
