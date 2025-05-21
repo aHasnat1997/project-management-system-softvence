@@ -14,10 +14,11 @@ import {
   FormMessage,
 } from "../../components/ui/form"
 import { Input } from "@/components/ui/input"
-import { useNavigate } from "react-router";
+import { useNavigate, useSearchParams } from "react-router";
 import { Eye, EyeOff } from "lucide-react";
 import { useState } from "react";
 import { toast } from "sonner";
+import { useSetNewPasswordMutation } from "@/redux/endpoints/authApi";
 
 const formSchema = z.object({
   newPassword: z.string().min(8),
@@ -25,6 +26,9 @@ const formSchema = z.object({
 })
 
 export default function SetNewPasswordPage(): React.ReactNode {
+  const [setPassword, { isLoading, isError, isSuccess }] = useSetNewPasswordMutation();
+  const [searchParams] = useSearchParams();
+  const token = searchParams.get('token');
   const [isOpen, setIsOpen] = useState<boolean>(false)
   const navigate = useNavigate();
   const form = useForm<z.infer<typeof formSchema>>({
@@ -35,11 +39,16 @@ export default function SetNewPasswordPage(): React.ReactNode {
     },
   });
 
-  function onSubmit(values: z.infer<typeof formSchema>) {
+  async function onSubmit(values: z.infer<typeof formSchema>) {
     console.log(values);
     if (values.newPassword === values.confirmPassword) {
-      navigate('/login');
-      toast.success("Successfully change password")
+      const { data } = await setPassword({ data: values, token });
+      if (data.success) {
+        toast.success("Successfully change password")
+        navigate('/login');
+      } else {
+        toast.error("Something went wrong");
+      }
     } else if (values.newPassword !== values.confirmPassword) {
       toast.error("Password not match")
     }
@@ -104,8 +113,13 @@ export default function SetNewPasswordPage(): React.ReactNode {
                 <Button
                   type="submit"
                   className="w-full"
+                  disabled={isLoading || isSuccess}
                 >
-                  Submit
+                  {
+                    isLoading ? 'Loading...' :
+                      isError ? 'Error' :
+                        'Submit'
+                  }
                 </Button>
               </form>
             </Form>

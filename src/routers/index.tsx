@@ -6,7 +6,6 @@ import Home from "@/pages/DashboardPages/Home";
 import ForgotPasswordPage from "@/pages/ForgotPasswordPage";
 import SetNewPasswordPage from "@/pages/SetNewPasswordPage";
 import ResetPasswordPage from "@/pages/ResetPasswordPage";
-import RegistrationPage from "@/pages/RegistrationPage";
 
 export default function AppRoutes() {
   return (
@@ -17,7 +16,6 @@ export default function AppRoutes() {
         <Route path="forgot-password" element={<ForgotPasswordPage />} />
         <Route path="set-new-password" element={<SetNewPasswordPage />} />
         <Route path="reset-password" element={<ResetPasswordPage />} />
-        <Route path="reg" element={<RegistrationPage />} />
       </Routes>
 
       <Routes>

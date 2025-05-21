@@ -3,7 +3,6 @@ import loginImage from "../../assets/loginImage.png";
 import { z } from "zod";
 import { zodResolver } from "@hookform/resolvers/zod"
 import { useForm } from "react-hook-form"
-
 import { Button } from "../../components/ui/button"
 import {
   Form,
@@ -40,16 +39,11 @@ export default function LoginPage(): React.ReactNode {
       password: ""
     },
   });
-  // console.log({ isSuccess, isLoading, isError });
 
   async function onSubmit(values: z.infer<typeof formSchema>) {
     try {
       const { data } = await userLogin(values);
-      console.log(data);
-
       if (data.success) {
-        console.log('hello');
-
         dispatch(storeUserInfo(data.data.accessToken));
         toast.success("Successfully login")
         navigate('/dashboard');

@@ -17,3 +17,9 @@ export type TJwtPayload = {
   firstName: string;
   lastName: string;
 };
+
+export type TChangePassword = {
+  oldPassword: string;
+  newPassword: string;
+  confirmPassword: string;
+};

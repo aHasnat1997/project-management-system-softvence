@@ -16,12 +16,14 @@ import {
 import { Input } from "@/components/ui/input"
 import { useNavigate } from "react-router";
 import { toast } from "sonner";
+import { useForgotPasswordMutation } from "@/redux/endpoints/authApi";
 
 const formSchema = z.object({
   email: z.string().email().min(2)
 })
 
 export default function ForgotPasswordPage(): React.ReactNode {
+  const [forgotPassword, { isLoading, isSuccess, isError }] = useForgotPasswordMutation();
   const navigate = useNavigate();
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
@@ -30,7 +32,18 @@ export default function ForgotPasswordPage(): React.ReactNode {
     },
   });
 
-  function onSubmit(values: z.infer<typeof formSchema>) {
+  async function onSubmit(values: z.infer<typeof formSchema>) {
+    try {
+      const { data } = await forgotPassword(values);
+      if (data.success) {
+        toast.success("Check your Email for next process")
+      } else {
+        toast.error("Something went wrong");
+      }
+    } catch (error) {
+      toast.error("Something went wrong");
+      console.error(error);
+    }
     console.log(values);
     toast.success("Check your Email for next process")
   }
@@ -65,14 +78,20 @@ export default function ForgotPasswordPage(): React.ReactNode {
                     className="w-[150px]"
                     variant='outline'
                     onClick={() => navigate('/login')}
+                    disabled={isLoading || isSuccess}
                   >
                     Back
                   </Button>
                   <Button
                     type="submit"
                     className="w-[150px]"
+                    disabled={isLoading || isSuccess}
                   >
-                    Send
+                    {
+                      isLoading ? 'Loading...' :
+                        isError ? 'Error' :
+                          'Send'
+                    }
                   </Button>
                 </div>
               </form>

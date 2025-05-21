@@ -3,7 +3,6 @@ import loginImage from "../../assets/loginImage.png";
 import { z } from "zod";
 import { zodResolver } from "@hookform/resolvers/zod"
 import { useForm } from "react-hook-form"
-
 import { Button } from "../../components/ui/button"
 import {
   Form,
@@ -18,13 +17,22 @@ import { useNavigate } from "react-router";
 import { Eye, EyeOff } from "lucide-react";
 import { useState } from "react";
 import { toast } from "sonner";
+import { useResetPasswordMutation } from "@/redux/endpoints/authApi";
 
 const formSchema = z.object({
   oldPassword: z.string().min(8),
   newPassword: z.string().min(8),
+  confirmPassword: z.string().min(8),
 })
+// .refine((data) => data.newPassword === data.confirmPassword, {
+//   message: "Passwords don't match"
+// });
 
 export default function ResetPasswordPage(): React.ReactNode {
+  const storedData = localStorage.getItem('persist:userInfo');
+  const userData = JSON.parse(storedData!).user;
+
+  const [resetPassword, { isLoading, isSuccess, isError }] = useResetPasswordMutation();
   const [isOpen, setIsOpen] = useState<boolean>(false)
   const navigate = useNavigate();
   const form = useForm<z.infer<typeof formSchema>>({
@@ -32,16 +40,21 @@ export default function ResetPasswordPage(): React.ReactNode {
     defaultValues: {
       oldPassword: "",
       newPassword: "",
+      confirmPassword: ""
     },
   });
 
-  function onSubmit(values: z.infer<typeof formSchema>) {
-    console.log(values);
-    if (values.oldPassword === 'pass1234') {
-      navigate('/login');
-      toast.success("Successfully change password")
-    } else if (values.newPassword !== 'pass1234') {
-      toast.error("Old password not match")
+  async function onSubmit(values: z.infer<typeof formSchema>) {
+    try {
+      const { data } = await resetPassword({ data: values, userId: JSON.parse(userData).id }).unwrap();
+      // console.log('===============>', data);
+      if (data) {
+        toast.success("Password is changed successfully")
+        navigate('/login');
+      }
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    } catch (error: any) {
+      toast.error(error?.data?.errorSources[0]?.message);
     }
   }
 
@@ -104,11 +117,40 @@ export default function ResetPasswordPage(): React.ReactNode {
                     </FormItem>
                   )}
                 />
+                <FormField
+                  control={form.control}
+                  name="confirmPassword"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel className="text-[#6B6B6B]">Confirm Password</FormLabel>
+                      <FormControl>
+                        <div className="relative">
+                          <Input {...field} className="w-[316px]" type={isOpen ? "text" : "password"} />
+                          <button
+                            className="absolute top-[6px] right-2 border-0 p-0 cursor-pointer"
+                            type="button"
+                            onClick={() => setIsOpen(!isOpen)}
+                          >
+                            {
+                              isOpen ? <Eye /> : <EyeOff />
+                            }
+                          </button>
+                        </div>
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
                 <Button
                   type="submit"
                   className="w-full"
+                  disabled={isLoading || isSuccess}
                 >
-                  Submit
+                  {
+                    isLoading ? 'Loading...' :
+                      isError ? 'Error' :
+                        'Submit'
+                  }
                 </Button>
               </form>
             </Form>

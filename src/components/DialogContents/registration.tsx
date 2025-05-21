@@ -14,6 +14,7 @@ import {
 import { Input } from "@/components/ui/input"
 import { toast } from "sonner";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
+import { useUserCreateMutation } from "@/redux/endpoints/userApi";
 
 const formSchema = z.object({
   userName: z.string().min(2),
@@ -22,20 +23,23 @@ const formSchema = z.object({
   employeeId: z.string().min(2),
   email: z.string().email().min(2),
   phoneNumber: z.string().min(2),
-  avatar: z.string().min(2),
+  avatar: z.any().refine((file) => file instanceof File || file === undefined, {
+    message: "Please upload a valid image file",
+  }),
   designation: z.string().min(2),
   role: z.enum(['Admin', 'Management', 'Sells', 'Operation']),
   userStatus: z.enum(['Active', 'Deactivate']),
-  teamLead: z.string().min(2),
-  team: z.string().min(2),
-  address: z.string().min(2),
-  subArea: z.string().min(2),
-  district: z.string().min(2),
-  state: z.string().min(2),
-  country: z.string().min(2),
+  teamLead: z.string().optional(),
+  team: z.string().optional(),
+  address: z.string().optional(),
+  subArea: z.string().optional(),
+  district: z.string().optional(),
+  state: z.string().optional(),
+  country: z.string().optional(),
 })
 
-export default function RegistrationPage(): React.ReactNode {
+export default function RegistrationContent(): React.ReactNode {
+  const [userCreate, { isLoading, isSuccess, isError }] = useUserCreateMutation();
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
     defaultValues: {
@@ -45,7 +49,7 @@ export default function RegistrationPage(): React.ReactNode {
       employeeId: "",
       email: "",
       phoneNumber: "",
-      avatar: "",
+      avatar: undefined,
       designation: "",
       teamLead: "",
       team: "",
@@ -57,15 +61,44 @@ export default function RegistrationPage(): React.ReactNode {
     }
   });
 
-  function onSubmit(values: z.infer<typeof formSchema>) {
-    console.log(values);
-    toast.success("Successfully Registration Complete")
+  async function onSubmit(values: z.infer<typeof formSchema>) {
+    const formData = new FormData();
+
+    const { avatar, ...rem } = values;
+    console.log('rem===========>', rem);
+    formData.append("file", avatar);
+    formData.append("data", JSON.stringify(rem));
+    console.log('formData', formData);
+    try {
+      await userCreate(formData).unwrap();
+      toast.success("Registration successful!");
+      form.reset({
+        userName: "",
+        firstName: "",
+        lastName: "",
+        employeeId: "",
+        email: "",
+        phoneNumber: "",
+        avatar: undefined,
+        designation: "",
+        teamLead: "",
+        team: "",
+        address: "",
+        subArea: "",
+        district: "",
+        state: "",
+        country: ""
+      });
+    } catch (err) {
+      console.error("Registration failed:", err);
+      toast.error("Registration failed.");
+    }
   }
 
   return (
-    <section className="max-w-[1200px] min-h-[100vh] lg:px-4 mx-auto flex items-center justify-center">
+    <section className="lg:px-2 mx-auto flex items-center justify-center">
       <Form {...form}>
-        <form onSubmit={form.handleSubmit(onSubmit)} className="w-[80%] space-y-4">
+        <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4">
           <div className="w-full flex items-center gap-4">
             <FormField
               control={form.control}
@@ -157,11 +190,18 @@ export default function RegistrationPage(): React.ReactNode {
             <FormField
               control={form.control}
               name="avatar"
-              render={({ field }) => (
+              render={({ field: { onChange } }) => (
                 <FormItem className="w-full">
                   <FormLabel className="text-[#6B6B6B]">Avatar</FormLabel>
                   <FormControl>
-                    <Input {...field} autoComplete="off" type="file" />
+                    <Input
+                      type="file"
+                      accept="image/*"
+                      onChange={(e) => {
+                        const file = e.target.files?.[0];
+                        onChange(file);
+                      }}
+                    />
                   </FormControl>
                   <FormMessage />
                 </FormItem>
@@ -319,7 +359,7 @@ export default function RegistrationPage(): React.ReactNode {
                 <FormItem className="w-full">
                   <FormLabel className="text-[#6B6B6B]">Country</FormLabel>
                   <FormControl>
-                    <Input {...field} autoComplete="off" placeholder="Shenpara" />
+                    <Input {...field} autoComplete="off" placeholder="Bangladesh" />
                   </FormControl>
                   <FormMessage />
                 </FormItem>
@@ -338,7 +378,7 @@ export default function RegistrationPage(): React.ReactNode {
                 employeeId: "",
                 email: "",
                 phoneNumber: "",
-                avatar: "",
+                avatar: undefined,
                 designation: "",
                 teamLead: "",
                 team: "",
@@ -348,13 +388,19 @@ export default function RegistrationPage(): React.ReactNode {
                 state: "",
                 country: ""
               })}
+              disabled={isLoading || isSuccess}
             >
               Reset
             </Button>
             <Button
               type="submit"
+              disabled={isLoading || isSuccess}
             >
-              Submit
+              {
+                isLoading ? 'Loading...' :
+                  isError ? 'Error' :
+                    'Submit'
+              }
             </Button>
           </div>
         </form>
