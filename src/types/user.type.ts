@@ -18,6 +18,17 @@ export type TJwtPayload = {
   lastName: string;
 };
 
+export type TCurrentLoginUser = {
+  id: string;
+  firstName: string;
+  lastName: string;
+  email: string;
+  avatar: string;
+  role: string;
+  iat: number;
+  exp: number;
+};
+
 export type TChangePassword = {
   oldPassword: string;
   newPassword: string;

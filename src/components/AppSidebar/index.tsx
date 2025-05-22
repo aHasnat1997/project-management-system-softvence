@@ -1,8 +1,9 @@
 import {
-  CircleChevronUp,
   ClipboardCheck,
   LayoutGrid,
+  LogOut,
   NotepadText,
+  PanelRight,
   Settings,
   SquarePen,
   UserRound,
@@ -10,24 +11,26 @@ import {
   UsersRound,
 } from "lucide-react";
 import { useEffect, useRef, useState } from "react";
-import { Link } from "react-router";
+import { NavLink, useNavigate } from "react-router";
+import { Button } from "../ui/button";
 
 // Menu items.
 const items = [
   { title: "Dashboard", url: "#", icon: LayoutGrid },
-  { title: "Member", url: "#", icon: UsersRound },
-  { title: "User", url: "#", icon: UserRound },
-  { title: "Project", url: "#", icon: NotepadText },
-  { title: "Team", url: "#", icon: Users },
-  { title: "Assignment", url: "#", icon: SquarePen },
-  { title: "Project Resource", url: "#", icon: ClipboardCheck },
-  { title: "Settings", url: "#", icon: Settings },
+  { title: "Member", url: "/", icon: UsersRound },
+  { title: "User", url: "/", icon: UserRound },
+  { title: "Project", url: "/", icon: NotepadText },
+  { title: "Team", url: "/", icon: Users },
+  { title: "Assignment", url: "/", icon: SquarePen },
+  { title: "Project Resource", url: "/", icon: ClipboardCheck },
+  { title: "Settings", url: "/", icon: Settings },
 ];
 
 export function AppSidebar() {
   const sidebarRef = useRef<HTMLDivElement>(null);
   const [isOpen, setIsOpen] = useState<boolean>(true);
   const [isMobile, setIsMobile] = useState<boolean>(false);
+  const navigate = useNavigate();
 
   // Set initial state based on screen size
   useEffect(() => {
@@ -62,37 +65,54 @@ export function AppSidebar() {
   return (
     <section
       ref={sidebarRef}
-      className={`border-r-2 z-40 bg-white border-border absolute lg:relative duration-500 h-[calc(100vh-60px)] ${isOpen ? "w-[250px]" : "w-0"
-        }`}
+      className={`flex flex-col gap-2 border-r-2 z-40 bg-white border-border absolute lg:relative duration-1000 h-[calc(100vh-60px)] ${isOpen ? "w-64 py-4" : "w-[60px] py-4"}`}
     >
       {/* Toggle Button */}
       <button
-        className={`absolute z-50 top-2 cursor-pointer duration-500 ${isOpen ? "-rotate-90 -right-4" : "rotate-90 -right-8"
-          }`}
+        className={`cursor-pointer text-[#6B6B6B] mb-4 ${isOpen ? 'ml-auto px-4' : 'mx-auto'}`}
         onClick={() => setIsOpen(!isOpen)}
       >
-        <CircleChevronUp className="bg-white rounded-full text-[#a8a8a8] size-8 duration-200 hover:text-primary" />
+        <PanelRight />
       </button>
 
       {/* Sidebar content */}
-      <ul
-        className={`px-2 mt-8 duration-500 ${isOpen ? "w-full block" : "w-0 hidden"
-          }`}
-      >
+      <ul className="px-2">
         {items.map((item, i) => (
           <li
             key={i}
-            className="w-full px-4 py-2 cursor-pointer group hover:bg-[#EBEBED]"
+            className={`flex items-center gap-4 group hover:bg-[#EBEBED] ${isOpen ? "" : "rounded-full"}`}
           >
-            <Link to={item.url} className="flex items-center gap-2">
-              <item.icon className="size-[20px] text-[#6B6B6B] group-hover:text-black" />
-              <h4 className="text-[#6B6B6B] text-nowrap group-hover:text-black">
-                {item.title}
-              </h4>
-            </Link>
+            <NavLink
+              to={item.url}
+              className={({ isActive }) =>
+                `w-full ${isActive ? `bg-[#EBEBED] text-primary ${isOpen ? '' : 'rounded-full'}` : "text-[#6B6B6B]"}`
+              }
+            >
+              <div className={` flex items-center gap-4 w-full ${isOpen ? "px-4 py-2" : "p-2 rounded-full"}`}>
+                <item.icon className="group-hover:text-primary transition-colors" />
+                <h4
+                  className={`text-nowrap group-hover:text-primary duration-300 ${isOpen ? "scale-100 block" : "scale-0 hidden"
+                    }`}
+                >
+                  {item.title}
+                </h4>
+              </div>
+            </NavLink>
           </li>
         ))}
       </ul>
+
+
+      <Button
+        variant='ghost'
+        className="mt-auto"
+        onClick={() => {
+          localStorage.removeItem('persist:userInfo')
+          navigate("/login", { replace: true })
+        }}
+      >
+        <LogOut /> <span className={isOpen ? "w-full block" : "w-0 hidden"}>Log Out</span>
+      </Button>
     </section>
   );
 }

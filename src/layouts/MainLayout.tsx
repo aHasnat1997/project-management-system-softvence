@@ -9,7 +9,7 @@ export default function MainLayout() {
       <TopBar />
       <div className="flex relative">
         <AppSidebar />
-        <ScrollArea className='h-[calc(100vh-60px)] w-full'>
+        <ScrollArea className='h-[calc(100vh-60px)] w-full p-6'>
           <Outlet />
         </ScrollArea>
       </div>

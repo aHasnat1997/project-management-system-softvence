@@ -166,7 +166,7 @@ export function DataTable<TData, TValue>({
                       </TableCell>
                     ))}
                     {actions && (
-                      <TableCell className="text-right">
+                      <TableCell className="text-right flex items-center justify-end">
                         {actions(row.original)}
                       </TableCell>
                     )}

@@ -48,9 +48,10 @@ export default function LoginPage(): React.ReactNode {
         toast.success("Successfully login")
         navigate('/dashboard');
       }
-    } catch (error) {
-      console.error(error)
-      toast.error("Something went wrong")
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    } catch (error: any) {
+      console.log({ error })
+      toast.error(error?.message)
     }
   }
 
