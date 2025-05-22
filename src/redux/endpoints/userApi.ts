@@ -12,9 +12,20 @@ export const userApi = baseApi.injectEndpoints({
       invalidatesTags: ['user']
     }),
 
+    allUsers: build.query({
+      query: params => ({
+        url: '/users',
+        method: 'GET',
+        credentials: 'include',
+        params
+      }),
+      providesTags: ['user']
+    }),
+
   }),
 });
 
 export const {
   useUserCreateMutation,
+  useAllUsersQuery
 } = userApi;
