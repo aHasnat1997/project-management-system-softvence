@@ -1,10 +1,10 @@
 import { DataTable } from "@/components/DataTable/dataTable"
+import DialogWrapper from "@/components/DialogContents"
 import RegistrationContent from "@/components/DialogContents/registration"
 import FileUploader, { type CloudinaryUploadResponse } from "@/components/FileUploader"
 import Headers from "@/components/Headers"
 import SearchInput from "@/components/SearchInput"
 import { Button } from "@/components/ui/button"
-import { Dialog, DialogContent, DialogTrigger } from "@/components/ui/dialog"
 import type { ColumnDef } from "@tanstack/react-table"
 import { Plus } from "lucide-react"
 import { useState } from "react"
@@ -115,16 +115,14 @@ export default function Home() {
       <Headers title="Dashboard">
         <div className="flex items-center gap-2">
           <SearchInput value={searchTerm} onChange={setSearchTerm} />
-          <Dialog>
-            <DialogTrigger asChild>
+          <DialogWrapper
+            trigger={
               <Button>
                 <Plus /> Add User
               </Button>
-            </DialogTrigger>
-            <DialogContent>
-              <RegistrationContent />
-            </DialogContent>
-          </Dialog>
+            }
+            content={<RegistrationContent />}
+          />
         </div>
       </Headers>
 
