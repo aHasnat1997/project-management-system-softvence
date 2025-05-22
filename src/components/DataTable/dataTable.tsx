@@ -21,13 +21,12 @@ import {
 } from "@/components/ui/table"
 import { Button } from "../ui/button"
 import { useState } from "react"
-import { Input } from "../ui/input"
-import {
-  DropdownMenu,
-  DropdownMenuCheckboxItem,
-  DropdownMenuContent,
-  DropdownMenuTrigger,
-} from "../ui/dropdown-menu"
+// import {
+//   DropdownMenu,
+//   DropdownMenuCheckboxItem,
+//   DropdownMenuContent,
+//   DropdownMenuTrigger,
+// } from "../ui/dropdown-menu"
 import { Skeleton } from "../ui/skeleton"
 
 interface DataTableProps<TData, TValue> {
@@ -47,12 +46,10 @@ export function DataTable<TData, TValue>({
   columns,
   data,
   isLoading = false,
-  filterColumn,
   page,
   limit,
   total,
   onPageChange,
-  // onLimitChange,
   actions,
 }: DataTableProps<TData, TValue>) {
   const [sorting, setSorting] = useState<SortingState>([])
@@ -100,20 +97,7 @@ export function DataTable<TData, TValue>({
 
   return (
     <div>
-      <div className="flex items-center gap-4 py-4">
-        {filterColumn && (
-          <Input
-            placeholder={`Filter ${String(filterColumn)}...`}
-            value={
-              (table.getColumn(String(filterColumn))?.getFilterValue() as string) ?? ""
-            }
-            onChange={(event) =>
-              table.getColumn(String(filterColumn))?.setFilterValue(event.target.value)
-            }
-            className="max-w-sm"
-          />
-        )}
-
+      {/* <div className="flex items-center gap-4 py-4">
         <DropdownMenu>
           <DropdownMenuTrigger asChild>
             <Button variant="outline" className="ml-auto">
@@ -136,7 +120,7 @@ export function DataTable<TData, TValue>({
               ))}
           </DropdownMenuContent>
         </DropdownMenu>
-      </div>
+      </div> */}
 
       <div className="rounded-md border">
         <Table>

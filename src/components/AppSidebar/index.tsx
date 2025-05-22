@@ -19,7 +19,7 @@ import TooltipWrapper from "../TooltipWrapper";
 const items = [
   { title: "Dashboard", url: "/dashboard", icon: LayoutGrid, end: true },
   { title: "Member", url: "/dashboard/member", icon: UsersRound, end: true },
-  { title: "User", url: "/", icon: UserRound, end: true },
+  { title: "User", url: "/dashboard/users", icon: UserRound, end: true },
   { title: "Project", url: "/", icon: NotepadText, end: true },
   { title: "Team", url: "/", icon: Users, end: true },
   { title: "Assignment", url: "/", icon: SquarePen, end: true },
