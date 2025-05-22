@@ -2,6 +2,8 @@
 import { useRef, useState } from "react";
 import { Input } from "../ui/input";
 import { CloudUpload, X } from "lucide-react";
+import { Skeleton } from "../ui/skeleton";
+import { useRemoveFileMutation, useUploadFileMutation } from "@/redux/endpoints/fileUploadApi";
 
 export type CloudinaryUploadResponse = {
   url: string;
@@ -28,59 +30,50 @@ export default function FileUploader({
   onDeleteSuccess,
 }: FileUploaderProps) {
   const fileInputRef = useRef<HTMLInputElement>(null);
-  const [uploading, setUploading] = useState(false);
+  const [uploadingIds, setUploadingIds] = useState<string[]>([]);
   const [error, setError] = useState<string | null>(null);
+
+  const [uploadFile] = useUploadFileMutation();
+  const [removeFile] = useRemoveFileMutation();
 
   const handleFileChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
     const files = e.target.files;
     if (!files || files.length === 0) return;
 
-    setUploading(true);
-    setError(null);
-
     const uploadedFiles: CloudinaryUploadResponse[] = [];
+
+    setError(null);
 
     for (const file of Array.from(files)) {
       const formData = new FormData();
       formData.append("file", file);
-      formData.append("upload_preset", import.meta.env.VITE_UPLOAD_PRESET);
       if (folder) formData.append("folder", folder);
 
-      try {
-        const res = await fetch(
-          `https://api.cloudinary.com/v1_1/${import.meta.env.VITE_CLOUD_NAME}/auto/upload`,
-          {
-            method: "POST",
-            body: formData,
-          }
-        );
-        if (!res.ok) throw new Error("Upload failed");
+      const fakeId = `${file.name}-${file.size}`;
+      setUploadingIds(prev => [...prev, fakeId]);
 
-        const data = await res.json();
-        uploadedFiles.push(data);
+      try {
+        const res = await uploadFile(formData).unwrap();
+        uploadedFiles.push(res.data);
       } catch (err) {
         console.error(err);
         setError("Upload failed. Please try again.");
+      } finally {
+        setUploadingIds(prev => prev.filter(id => id !== fakeId));
       }
     }
 
     if (uploadedFiles.length > 0) {
       onUploadSuccess([...fileData, ...uploadedFiles]);
     }
-
-    setUploading(false);
   };
 
   const handleRemove = async (publicId: string) => {
     try {
-      await fetch(`/api/delete-from-cloudinary?publicId=${publicId}`, {
-        method: "DELETE",
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ publicId }),
-      });
+      await removeFile({ publicId }).unwrap();
       onDeleteSuccess?.(publicId);
     } catch (err) {
-      console.error("Failed to delete from Cloudinary", err);
+      console.error("Failed to delete from server", err);
     }
   };
 
@@ -91,11 +84,10 @@ export default function FileUploader({
         <button
           type="button"
           onClick={() => fileInputRef.current?.click()}
-          disabled={uploading}
           className="py-10 px-20 rounded-md border-2 border-dotted border-primary bg-primary/20 flex flex-col items-center justify-center"
         >
           <CloudUpload />
-          {uploading ? "Uploading..." : "Upload Files"}
+          Upload Files
         </button>
         <Input
           type="file"
@@ -128,6 +120,14 @@ export default function FileUploader({
               <X size={16} />
             </button>
           </div>
+        ))}
+
+        {/* Skeletons for uploading files */}
+        {uploadingIds.map((id) => (
+          <Skeleton
+            key={id}
+            className="w-[130px] h-[130px] rounded-md bg-gray-200 animate-pulse"
+          />
         ))}
       </div>
     </div>

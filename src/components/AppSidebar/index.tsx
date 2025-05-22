@@ -13,17 +13,18 @@ import {
 import { useEffect, useRef, useState } from "react";
 import { NavLink, useNavigate } from "react-router";
 import { Button } from "../ui/button";
+import TooltipWrapper from "../TooltipWrapper";
 
 // Menu items.
 const items = [
-  { title: "Dashboard", url: "/dashboard", icon: LayoutGrid },
-  { title: "Member", url: "/dashboard/member", icon: UsersRound },
-  { title: "User", url: "/", icon: UserRound },
-  { title: "Project", url: "/", icon: NotepadText },
-  { title: "Team", url: "/", icon: Users },
-  { title: "Assignment", url: "/", icon: SquarePen },
-  { title: "Project Resource", url: "/", icon: ClipboardCheck },
-  { title: "Settings", url: "/", icon: Settings },
+  { title: "Dashboard", url: "/dashboard", icon: LayoutGrid, end: true },
+  { title: "Member", url: "/dashboard/member", icon: UsersRound, end: true },
+  { title: "User", url: "/", icon: UserRound, end: true },
+  { title: "Project", url: "/", icon: NotepadText, end: true },
+  { title: "Team", url: "/", icon: Users, end: true },
+  { title: "Assignment", url: "/", icon: SquarePen, end: true },
+  { title: "Project Resource", url: "/", icon: ClipboardCheck, end: true },
+  { title: "Settings", url: "/", icon: Settings, end: true },
 ];
 
 export function AppSidebar() {
@@ -84,13 +85,22 @@ export function AppSidebar() {
           >
             <NavLink
               to={item.url}
-              end={true}
+              end={item.end}
               className={({ isActive }) =>
                 `w-full ${isActive ? `bg-[#EBEBED] text-primary ${isOpen ? '' : 'rounded-full'}` : "text-[#6B6B6B]"}`
               }
             >
               <div className={` flex items-center gap-4 w-full ${isOpen ? "px-4 py-2" : "p-2 rounded-full"}`}>
-                <item.icon className="group-hover:text-primary transition-colors" />
+                {
+                  isOpen ? (
+                    <item.icon className="group-hover:text-primary transition-colors" />
+                  ) : (
+                    <TooltipWrapper
+                      trigger={<item.icon className="group-hover:text-primary transition-colors cursor-pointer" />}
+                      content={item.title}
+                    />
+                  )
+                }
                 <h4
                   className={`text-nowrap group-hover:text-primary duration-300 ${isOpen ? "scale-100 block" : "scale-0 hidden"
                     }`}
@@ -112,7 +122,17 @@ export function AppSidebar() {
           navigate("/login", { replace: true })
         }}
       >
-        <LogOut /> <span className={isOpen ? "w-full block" : "w-0 hidden"}>Log Out</span>
+        {
+          isOpen ? (
+            <><LogOut /> <span className={isOpen ? "w-full block" : "w-0 hidden"}>Log Out</span></>
+          ) : (
+            <TooltipWrapper
+              trigger={<LogOut className="cursor-pointer" />}
+              content={'Log Out'}
+            />
+          )
+        }
+
       </Button>
     </section>
   );

@@ -15,11 +15,6 @@ export default function TopBar() {
       </div>
       <div className="flex items-center gap-4">
         <div>
-          {/* <img
-            src={currentUser?.avatar}
-            alt="avatar"
-            className="size-[30px] rounded-full"
-          /> */}
           <Avatar>
             <AvatarImage src={currentUser?.avatar} alt="avatar" />
             <AvatarFallback className="bg-primary text-white font-semibold">
