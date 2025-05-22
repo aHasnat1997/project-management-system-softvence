@@ -16,8 +16,8 @@ import { Button } from "../ui/button";
 
 // Menu items.
 const items = [
-  { title: "Dashboard", url: "#", icon: LayoutGrid },
-  { title: "Member", url: "/", icon: UsersRound },
+  { title: "Dashboard", url: "/dashboard", icon: LayoutGrid },
+  { title: "Member", url: "/dashboard/member", icon: UsersRound },
   { title: "User", url: "/", icon: UserRound },
   { title: "Project", url: "/", icon: NotepadText },
   { title: "Team", url: "/", icon: Users },
@@ -84,6 +84,7 @@ export function AppSidebar() {
           >
             <NavLink
               to={item.url}
+              end={true}
               className={({ isActive }) =>
                 `w-full ${isActive ? `bg-[#EBEBED] text-primary ${isOpen ? '' : 'rounded-full'}` : "text-[#6B6B6B]"}`
               }
