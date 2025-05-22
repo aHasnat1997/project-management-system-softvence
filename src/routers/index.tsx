@@ -8,6 +8,7 @@ import SetNewPasswordPage from "@/pages/SetNewPasswordPage";
 import ResetPasswordPage from "@/pages/ResetPasswordPage";
 import ProtectedRoute from "./ProtectedRoute";
 import Member from "@/pages/DashboardPages/Member";
+import Users from "@/pages/DashboardPages/Users";
 
 export default function AppRoutes() {
   return (
@@ -26,6 +27,7 @@ export default function AppRoutes() {
         <Route path="dashboard" element={<ProtectedRoute><MainLayout /></ProtectedRoute>}>
           <Route index element={<Home />} />
           <Route path="member" element={<Member />} />
+          <Route path="users" element={<Users />} />
         </Route>
       </Routes>
     </>
