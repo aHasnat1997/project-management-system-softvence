@@ -1,89 +1,66 @@
-import ColumnsFilter from "@/components/DataTable/columnsFiltter";
+import ColumnsFilter from "@/components/DataTable/columnsFilter";
 import { DataTable, type DataTableHandle } from "@/components/DataTable/dataTable";
 import DialogWrapper from "@/components/DialogContents";
 import RegistrationContent from "@/components/DialogContents/registration";
 import Headers from "@/components/Headers";
 import SearchInput from "@/components/SearchInput";
+import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Button } from "@/components/ui/button";
 import { Switch } from "@/components/ui/switch";
 import { useAllUsersQuery } from "@/redux/endpoints/userApi";
 import type { ColumnDef } from "@tanstack/react-table";
-import { Eye, Plus } from "lucide-react";
+import { Eye, Filter, Plus } from "lucide-react";
 import { useRef, useState } from "react";
 
-export default function Users() {
+export default function MarketingProfile() {
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const tableRef = useRef<DataTableHandle<any>>(null)
   const [page, setPage] = useState<number>(1);
-  const [limit, setLimit] = useState<number>(5);
+  const [limit, setLimit] = useState<number>(15);
   const [searchTerm, setSearchTerm] = useState<string>("");
-  const { data: clientData } = useAllUsersQuery({ page, limit });
+  const { data: clientData, isLoading, isFetching } = useAllUsersQuery({ page, limit });
 
-  console.log(clientData);
-
-  type Employee = {
-    id: number
-    name: string
+  type TEmployee = {
+    _id: string
+    avatar: string
+    createdAt: string
+    updatedAt: string
+    designation: string
     email: string
-    department: string
-    status: "ACTIVE" | "INACTIVE"
+    employeeId: string
+    firstName: string
+    lastName: string
+    userName: string
+    phoneNumber: string
+    role: string
+    userStatus: "Active" | "Inactive"
+    isBlocked: boolean
+    isDeleted: boolean
+    isPasswordChanged: boolean
   };
-  const mockEmployees: Employee[] = [
-    {
-      id: 1,
-      name: "Alice Johnson",
-      email: "alice@example.com",
-      department: "Engineering",
-      status: "ACTIVE",
-    },
-    {
-      id: 2,
-      name: "Bob Smith",
-      email: "bob@example.com",
-      department: "Marketing",
-      status: "INACTIVE",
-    },
-    {
-      id: 3,
-      name: "Carol Lee",
-      email: "carol@example.com",
-      department: "HR",
-      status: "ACTIVE",
-    },
-    {
-      id: 1,
-      name: "Alice Johnson",
-      email: "alice@example.com",
-      department: "Engineering",
-      status: "ACTIVE",
-    },
-    {
-      id: 2,
-      name: "Bob Smith",
-      email: "bob@example.com",
-      department: "Marketing",
-      status: "INACTIVE",
-    },
-    {
-      id: 3,
-      name: "Carol Lee",
-      email: "carol@example.com",
-      department: "HR",
-      status: "ACTIVE",
-    },
-  ];
 
-  const columns: ColumnDef<Employee>[] = [
+  const columns: ColumnDef<TEmployee>[] = [
     {
-      accessorKey: "id",
-      header: "ID",
+      accessorKey: "avatar",
+      header: "Avatar",
       enableHiding: true,
-      cell: (info) => info.getValue(),
+      cell: ({ row }) => (
+        <Avatar>
+          <AvatarImage src={row?.original?.avatar} alt="avatar" />
+          <AvatarFallback className="bg-primary text-white font-semibold">
+            {row?.original?.firstName?.charAt(0)}
+            {row?.original?.lastName?.charAt(0)}
+          </AvatarFallback>
+        </Avatar>
+      ),
     },
     {
       accessorKey: "name",
       header: "Name",
       enableHiding: true,
+      cell: ({ row }) => (
+        <p>{row?.original?.firstName} {row?.original?.lastName}</p>
+      ),
     },
     {
       accessorKey: "email",
@@ -91,16 +68,16 @@ export default function Users() {
       enableHiding: true,
     },
     {
-      accessorKey: "department",
-      header: "Department",
+      accessorKey: "designation",
+      header: "Designation",
       enableHiding: true,
     },
     {
-      accessorKey: "status",
+      accessorKey: "userStatus",
       header: "Status",
       enableHiding: true,
       cell: ({ row }) => (
-        <Switch checked={row.original.status === "ACTIVE" ? true : false} />
+        <Switch checked={row.original.userStatus === "Active" ? true : false} />
       ),
     },
   ];
@@ -108,7 +85,7 @@ export default function Users() {
   return (
     <section>
       <div className="mb-4">
-        <Headers title="Users">
+        <Headers title="Marketing Profile">
           <div className="flex items-center gap-2">
             <SearchInput
               value={searchTerm}
@@ -116,7 +93,7 @@ export default function Users() {
             />
 
             <Button variant="outline" className="hidden md:flex">
-              <Eye /> View All
+              <Filter /> Filter
             </Button>
 
             <div>
@@ -135,19 +112,19 @@ export default function Users() {
         </Headers>
       </div>
 
-      <DataTable<Employee>
-        data={mockEmployees}
+      <DataTable<TEmployee>
+        data={clientData?.data}
         ref={tableRef}
         columns={columns}
-        isLoading={false}
+        isLoading={isLoading || isFetching}
         page={page}
         limit={limit}
-        total={mockEmployees.length}
+        total={clientData?.meta?.total}
         onPageChange={setPage}
         onLimitChange={setLimit}
         actions={() => (
           <span className="px-2">
-            <Eye />
+            <Eye className="text-primary" />
           </span>
         )}
       />
