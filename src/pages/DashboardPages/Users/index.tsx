@@ -113,6 +113,14 @@ export default function Users() {
               value={searchTerm}
               onChange={setSearchTerm}
             />
+
+            <Button variant="outline" className="hidden md:flex">
+              <Eye /> View All
+            </Button>
+            <Button variant="outline" className="hidden md:flex">
+              <Eye /> View All
+            </Button>
+
             <DialogWrapper
               trigger={
                 <Button>
