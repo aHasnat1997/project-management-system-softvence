@@ -6,7 +6,7 @@ import { Button } from "@/components/ui/button"
 import { Plus } from "lucide-react"
 import { useState } from "react"
 
-export default function Member() {
+export default function Project() {
   const [searchTerm, setSearchTerm] = useState<string>("");
   const [files, setFiles] = useState<CloudinaryUploadResponse[]>([]);
 
@@ -21,16 +21,16 @@ export default function Member() {
 
   return (
     <>
-      <Headers title="Member">
+      <Headers title="Project">
         <div className="flex items-center gap-2">
           <SearchInput value={searchTerm} onChange={setSearchTerm} />
           <DialogWrapper
             trigger={
               <Button>
-                <Plus /> Add Member
+                <Plus /> Add Project
               </Button>
             }
-            content={<h1>Add Member</h1>}
+            content={<h1>Add Project</h1>}
           />
         </div>
       </Headers>

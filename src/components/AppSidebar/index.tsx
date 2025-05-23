@@ -31,28 +31,13 @@ export default function AppSidebar({ ...props }: React.ComponentProps<typeof Sid
     const items = [
         { title: 'Dashboard', url: '/dashboard', icon: LayoutGrid, end: true },
         { title: 'Project Table', url: '/dashboard/project-table', icon: Table, end: true },
-        {
-            title: 'Marketing Profile',
-            url: '/dashboard/marketing-profile',
-            icon: PieChart,
-            end: true,
-        },
+        { title: 'Marketing Profile', url: '/dashboard/marketing-profile', icon: PieChart, end: true, },
         { title: 'Member', url: '/dashboard/member', icon: UsersRound, end: true },
         { title: 'Project Add', url: '/dashboard/project-add', icon: FilePlus, end: true },
         { title: 'Project Assign', url: '/dashboard/project-assign', icon: UserPlus, end: true },
         { title: 'Project Issue', url: '/dashboard/project-issue', icon: AlertCircle, end: true },
-        {
-            title: 'Project Message',
-            url: '/dashboard/project-message',
-            icon: MessagesSquare,
-            end: true,
-        },
-        {
-            title: 'Project Resource',
-            url: '/dashboard/project-resource',
-            icon: ClipboardCheck,
-            end: true,
-        },
+        { title: 'Project Message', url: '/dashboard/project-message', icon: MessagesSquare, end: true, },
+        { title: 'Project Resource', url: '/dashboard/project-resource', icon: ClipboardCheck, end: true, },
         { title: 'Team', url: '/dashboard/team', icon: Users, end: true },
     ];
 
@@ -71,8 +56,7 @@ export default function AppSidebar({ ...props }: React.ComponentProps<typeof Sid
                                     to={item.url}
                                     end={item.end}
                                     className={({ isActive }) =>
-                                        `w-full ${
-                                            isActive ? 'bg-white text-primary' : 'text-[#797979]'
+                                        `w-full ${isActive ? 'bg-white text-primary' : 'text-[#797979]'
                                         }`
                                     }
                                 >
@@ -80,12 +64,11 @@ export default function AppSidebar({ ...props }: React.ComponentProps<typeof Sid
                                         <SidebarMenuButton
                                             size="lg"
                                             tooltip={item.title}
-                                            className={`w-full hover:text-primary  ${
-                                                isActive ? '!bg-muted !text-primary shadow-sm' : ''
-                                            }`}
+                                            className={`w-full hover:text-primary  ${isActive ? '!bg-muted !text-primary shadow-sm' : ''
+                                                }`}
                                         >
                                             <item.icon className="!size-7 transition-colors pl-0.5" />
-                                            <h4 className="text-xl text-nowrap duration-300">
+                                            <h4 className="text-lg text-nowrap duration-300">
                                                 {item.title}
                                             </h4>
                                         </SidebarMenuButton>
