@@ -23,8 +23,8 @@ export default function DashboardOverviewCard({
 
     return (
         <Card className="p-4 ">
-            <span className="text-lg text-muted-foreground">{title}</span>
-            <span className="text-5xl font-bold">22 Days</span>
+            <span className="text-xl text-muted-foreground">{title}</span>
+            <span className="text-3xl font-bold">22 Days</span>
 
             <div className="flex justify-between items-end">
                 <div className="text-green-600 flex items-center bg-primary/20 px-2 py-1 rounded-full">

@@ -5,6 +5,7 @@ import { Bar, BarChart, CartesianGrid, XAxis, YAxis } from 'recharts';
 
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { type ChartConfig, ChartContainer, ChartTooltip } from '@/components/ui/chart';
+import SelectMonth from '@/components/Select/SelectMonth';
 
 const chartData = [
     { month: '01', desktop: 186 },
@@ -31,9 +32,14 @@ const chartConfig = {
 export function SalesRevenue() {
     return (
         <Card className="my-5 basis-8/12">
-            <CardHeader>
-                <CardTitle className="text-3xl">Sales Revenue</CardTitle>
-                <span className="text-5xl font-bold">$35,000.00</span>
+            <CardHeader className="flex flex-col gap-2">
+                <div className="flex justify-between w-full">
+                    <CardTitle className="text-2xl">Sales Revenue</CardTitle>
+                    <div>
+                        <SelectMonth value="0" onChange={() => {}} />
+                    </div>
+                </div>
+                <span className="text-4xl font-bold">$35,000.00</span>
                 <div className="flex items-center gap-2">
                     <div className="text-green-600 flex items-center bg-primary/20 px-2 py-1 rounded-full">
                         <ArrowUpRight /> 1.29%
