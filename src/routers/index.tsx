@@ -9,6 +9,7 @@ import ResetPasswordPage from "@/pages/ResetPasswordPage";
 import ProtectedRoute from "./ProtectedRoute";
 import Member from "@/pages/DashboardPages/Project";
 import Users from "@/pages/DashboardPages/MarketingProfile";
+import NotFoundPage from "@/pages/NotFoundPage";
 
 export default function AppRoutes() {
   return (
@@ -22,6 +23,7 @@ export default function AppRoutes() {
       </Routes>
 
       <Routes>
+        <Route path="*" element={<NotFoundPage />} />
         <Route path="dashboard" element={<ProtectedRoute><MainLayout /></ProtectedRoute>}>
           <Route index element={<Home />} />
           <Route path="project-table" element={<Member />} />

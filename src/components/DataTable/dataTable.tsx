@@ -99,7 +99,7 @@ function DataTableInner<TData, TValue>(
           </TableCell>
         ))}
         {actions && (
-          <TableCell>
+          <TableCell className="text-right flex items-center justify-end">
             <Skeleton className="h-6 w-16" />
           </TableCell>
         )}
