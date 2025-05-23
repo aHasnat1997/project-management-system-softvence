@@ -2,13 +2,14 @@ import {
   type ColumnDef,
   type SortingState,
   type ColumnFiltersState,
-  type VisibilityState,
+  // type VisibilityState,
   getSortedRowModel,
   flexRender,
   getCoreRowModel,
   useReactTable,
   getPaginationRowModel,
   getFilteredRowModel,
+  type VisibilityState,
 } from "@tanstack/react-table"
 
 import {
@@ -20,14 +21,19 @@ import {
   TableRow,
 } from "@/components/ui/table"
 import { Button } from "../ui/button"
-import { useState } from "react"
-// import {
-//   DropdownMenu,
-//   DropdownMenuCheckboxItem,
-//   DropdownMenuContent,
-//   DropdownMenuTrigger,
-// } from "../ui/dropdown-menu"
-import { Skeleton } from "../ui/skeleton"
+import {
+  Skeleton
+} from "../ui/skeleton"
+import React, {
+  useState,
+  forwardRef,
+  useImperativeHandle,
+  type ForwardedRef,
+} from "react"
+
+export interface DataTableHandle<TData> {
+  table: ReturnType<typeof useReactTable<TData>>
+}
 
 interface DataTableProps<TData, TValue> {
   columns: ColumnDef<TData, TValue>[]
@@ -42,42 +48,47 @@ interface DataTableProps<TData, TValue> {
   actions?: (row: TData) => React.ReactNode
 }
 
-export function DataTable<TData, TValue>({
-  columns,
-  data,
-  isLoading = false,
-  page,
-  limit,
-  total,
-  onPageChange,
-  actions,
-}: DataTableProps<TData, TValue>) {
-  const [sorting, setSorting] = useState<SortingState>([])
-  const [columnFilters, setColumnFilters] = useState<ColumnFiltersState>([])
-  const [columnVisibility, setColumnVisibility] = useState<VisibilityState>({})
+function DataTableInner<TData, TValue>(
+  {
+    columns,
+    data,
+    isLoading = false,
+    page,
+    limit,
+    total,
+    onPageChange,
+    actions,
+  }: DataTableProps<TData, TValue>,
+  ref: ForwardedRef<DataTableHandle<TData>>
+) {
+  const [sorting, setSorting] = useState<SortingState>([]);
+  const [columnFilters, setColumnFilters] = useState<ColumnFiltersState>([]);
+  const [columnVisibility, setColumnVisibility] = useState<VisibilityState>({});
 
   const table = useReactTable({
     data,
     columns,
+    state: {
+      sorting,
+      columnFilters,
+      columnVisibility,
+      pagination: {
+        pageIndex: page - 1,
+        pageSize: limit,
+      },
+    },
+    onSortingChange: setSorting,
+    onColumnFiltersChange: setColumnFilters,
+    onColumnVisibilityChange: setColumnVisibility,
     getCoreRowModel: getCoreRowModel(),
     getSortedRowModel: getSortedRowModel(),
     getFilteredRowModel: getFilteredRowModel(),
     getPaginationRowModel: getPaginationRowModel(),
     manualPagination: true,
     pageCount: Math.ceil(total / limit),
-    onSortingChange: setSorting,
-    onColumnFiltersChange: setColumnFilters,
-    onColumnVisibilityChange: setColumnVisibility,
-    state: {
-      sorting,
-      columnFilters,
-      columnVisibility,
-      pagination: {
-        pageIndex: page - 1, // tanstack uses 0-based indexing
-        pageSize: limit,
-      },
-    },
   })
+
+  useImperativeHandle(ref, () => ({ table }), [table])
 
   const renderSkeleton = () =>
     [...Array(limit)].map((_, rowIndex) => (
@@ -97,31 +108,6 @@ export function DataTable<TData, TValue>({
 
   return (
     <div>
-      {/* <div className="flex items-center gap-4 py-4">
-        <DropdownMenu>
-          <DropdownMenuTrigger asChild>
-            <Button variant="outline" className="ml-auto">
-              Columns
-            </Button>
-          </DropdownMenuTrigger>
-          <DropdownMenuContent align="end">
-            {table
-              .getAllColumns()
-              .filter((column) => column.getCanHide())
-              .map((column) => (
-                <DropdownMenuCheckboxItem
-                  key={column.id}
-                  className="capitalize"
-                  checked={column.getIsVisible()}
-                  onCheckedChange={(value) => column.toggleVisibility(!!value)}
-                >
-                  {column.id}
-                </DropdownMenuCheckboxItem>
-              ))}
-          </DropdownMenuContent>
-        </DropdownMenu>
-      </div> */}
-
       <div className="rounded-md border">
         <Table>
           <TableHeader>
@@ -188,3 +174,10 @@ export function DataTable<TData, TValue>({
     </div>
   )
 }
+
+export const DataTable = forwardRef(DataTableInner) as <
+  TData,
+  TValue = unknown,
+>(
+  props: DataTableProps<TData, TValue> & { ref?: React.Ref<DataTableHandle<TData>> }
+) => ReturnType<typeof DataTableInner>

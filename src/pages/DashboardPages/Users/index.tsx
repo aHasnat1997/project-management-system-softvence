@@ -1,15 +1,19 @@
-import { DataTable } from "@/components/DataTable/dataTable";
+import ColumnsFilter from "@/components/DataTable/columnsFiltter";
+import { DataTable, type DataTableHandle } from "@/components/DataTable/dataTable";
 import DialogWrapper from "@/components/DialogContents";
 import RegistrationContent from "@/components/DialogContents/registration";
 import Headers from "@/components/Headers";
 import SearchInput from "@/components/SearchInput";
 import { Button } from "@/components/ui/button";
+import { Switch } from "@/components/ui/switch";
 import { useAllUsersQuery } from "@/redux/endpoints/userApi";
 import type { ColumnDef } from "@tanstack/react-table";
 import { Eye, Plus } from "lucide-react";
-import { useState } from "react";
+import { useRef, useState } from "react";
 
 export default function Users() {
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  const tableRef = useRef<DataTableHandle<any>>(null)
   const [page, setPage] = useState<number>(1);
   const [limit, setLimit] = useState<number>(5);
   const [searchTerm, setSearchTerm] = useState<string>("");
@@ -73,33 +77,30 @@ export default function Users() {
     {
       accessorKey: "id",
       header: "ID",
+      enableHiding: true,
       cell: (info) => info.getValue(),
     },
     {
       accessorKey: "name",
       header: "Name",
+      enableHiding: true,
     },
     {
       accessorKey: "email",
       header: "Email",
+      enableHiding: true,
     },
     {
       accessorKey: "department",
       header: "Department",
+      enableHiding: true,
     },
     {
       accessorKey: "status",
       header: "Status",
+      enableHiding: true,
       cell: ({ row }) => (
-        <span
-          className={
-            row.original.status === "ACTIVE"
-              ? "text-green-600"
-              : "text-red-600"
-          }
-        >
-          {row.original.status}
-        </span>
+        <Switch checked={row.original.status === "ACTIVE" ? true : false} />
       ),
     },
   ];
@@ -117,9 +118,10 @@ export default function Users() {
             <Button variant="outline" className="hidden md:flex">
               <Eye /> View All
             </Button>
-            <Button variant="outline" className="hidden md:flex">
-              <Eye /> View All
-            </Button>
+
+            <div>
+              <ColumnsFilter tableRef={tableRef} />
+            </div>
 
             <DialogWrapper
               trigger={
@@ -133,8 +135,9 @@ export default function Users() {
         </Headers>
       </div>
 
-      <DataTable
+      <DataTable<Employee>
         data={mockEmployees}
+        ref={tableRef}
         columns={columns}
         isLoading={false}
         page={page}
