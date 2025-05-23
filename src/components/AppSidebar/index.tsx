@@ -1,139 +1,102 @@
+import * as React from "react"
 import {
   ClipboardCheck,
   LayoutGrid,
   LogOut,
   NotepadText,
-  PanelRight,
   Settings,
   SquarePen,
   UserRound,
   Users,
   UsersRound,
-} from "lucide-react";
-import { useEffect, useRef, useState } from "react";
-import { NavLink, useNavigate } from "react-router";
-import { Button } from "../ui/button";
-import TooltipWrapper from "../TooltipWrapper";
+} from "lucide-react"
 
-// Menu items.
-const items = [
-  { title: "Dashboard", url: "/dashboard", icon: LayoutGrid, end: true },
-  { title: "Member", url: "/dashboard/member", icon: UsersRound, end: true },
-  { title: "User", url: "/dashboard/users", icon: UserRound, end: true },
-  { title: "Project", url: "/", icon: NotepadText, end: true },
-  { title: "Team", url: "/", icon: Users, end: true },
-  { title: "Assignment", url: "/", icon: SquarePen, end: true },
-  { title: "Project Resource", url: "/", icon: ClipboardCheck, end: true },
-  { title: "Settings", url: "/", icon: Settings, end: true },
-];
+import {
+  Sidebar,
+  SidebarContent,
+  SidebarFooter,
+  SidebarMenu,
+  SidebarMenuButton,
+  SidebarMenuItem,
+  SidebarRail,
+  SidebarTrigger,
+} from "@/components/ui/sidebar"
+import { NavLink, useNavigate } from "react-router"
+import { Collapsible } from "../ui/collapsible";
 
-export function AppSidebar() {
-  const sidebarRef = useRef<HTMLDivElement>(null);
-  const [isOpen, setIsOpen] = useState<boolean>(true);
-  const [isMobile, setIsMobile] = useState<boolean>(false);
+
+export default function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
   const navigate = useNavigate();
 
-  // Set initial state based on screen size
-  useEffect(() => {
-    const handleResize = () => {
-      const mobile = window.innerWidth < 1024; // Tailwind's `lg` breakpoint
-      setIsMobile(mobile);
-      setIsOpen(!mobile); // Open on desktop, closed on mobile
-    };
-
-    handleResize(); // Set initially
-    window.addEventListener("resize", handleResize);
-    return () => window.removeEventListener("resize", handleResize);
-  }, []);
-
-  // Close on outside click only for mobile
-  useEffect(() => {
-    if (!isMobile || !isOpen) return;
-
-    const handleOutsideClick = (event: MouseEvent) => {
-      if (
-        sidebarRef.current &&
-        !sidebarRef.current.contains(event.target as Node)
-      ) {
-        setIsOpen(false);
-      }
-    };
-
-    document.addEventListener("mousedown", handleOutsideClick);
-    return () => document.removeEventListener("mousedown", handleOutsideClick);
-  }, [isMobile, isOpen]);
+  // Menu items.
+  const items = [
+    { title: "Dashboard", url: "/dashboard", icon: LayoutGrid, end: true },
+    { title: "Member", url: "/dashboard/member", icon: UsersRound, end: true },
+    { title: "User", url: "/dashboard/users", icon: UserRound, end: true },
+    { title: "Project", url: "/", icon: NotepadText, end: true },
+    { title: "Team", url: "/", icon: Users, end: true },
+    { title: "Assignment", url: "/", icon: SquarePen, end: true },
+    { title: "Project Resource", url: "/", icon: ClipboardCheck, end: true },
+    { title: "Settings", url: "/", icon: Settings, end: true },
+  ];
 
   return (
-    <section
-      ref={sidebarRef}
-      className={`flex flex-col gap-2 border-r-2 z-40 bg-white border-border absolute lg:relative duration-1000 h-[calc(100vh-60px)] ${isOpen ? "w-64 py-4" : "w-[60px] py-4"}`}
-    >
-      {/* Toggle Button */}
-      <button
-        className={`cursor-pointer text-[#6B6B6B] mb-4 ${isOpen ? 'ml-auto px-4' : 'mx-auto'}`}
-        onClick={() => setIsOpen(!isOpen)}
-      >
-        <PanelRight />
-      </button>
+    <section className="">
+      <Sidebar collapsible="icon" {...props} className="pt-[60px]">
+        <SidebarTrigger className="text-[#6B6B6B] ml-auto mt-2.5 mr-2.5" />
 
-      {/* Sidebar content */}
-      <ul className="px-2">
-        {items.map((item, i) => (
-          <li
-            key={i}
-            className={`flex items-center gap-4 group hover:bg-[#EBEBED] ${isOpen ? "" : "rounded-full"}`}
-          >
-            <NavLink
-              to={item.url}
-              end={item.end}
-              className={({ isActive }) =>
-                `w-full ${isActive ? `bg-[#EBEBED] text-primary ${isOpen ? '' : 'rounded-full'}` : "text-[#6B6B6B]"}`
-              }
-            >
-              <div className={` flex items-center gap-4 w-full ${isOpen ? "px-4 py-2" : "p-2 rounded-full"}`}>
-                {
-                  isOpen ? (
-                    <item.icon className="group-hover:text-primary transition-colors" />
-                  ) : (
-                    <TooltipWrapper
-                      trigger={<item.icon className="group-hover:text-primary transition-colors cursor-pointer" />}
-                      content={item.title}
-                    />
-                  )
-                }
-                <h4
-                  className={`text-nowrap group-hover:text-primary duration-300 ${isOpen ? "scale-100 block" : "scale-0 hidden"
-                    }`}
+        <SidebarContent>
+          <SidebarMenu className="px-2">
+            {items.map((item, i) => (
+              <Collapsible
+                key={i}
+                className={`flex items-center gap-4 group }`}
+              >
+                <NavLink
+                  to={item.url}
+                  end={item.end}
+                  className={({ isActive }) =>
+                    `w-full ${isActive ? `bg-[#EBEBED] text-primary rounded-md` : "text-[#6B6B6B] rounded-md"}`
+                  }
                 >
-                  {item.title}
-                </h4>
-              </div>
-            </NavLink>
-          </li>
-        ))}
-      </ul>
+                  <SidebarMenuItem className="w-full">
+                    <SidebarMenuButton
+                      size='lg'
+                      tooltip={item.title}
+                      className={`flex items-center gap-4 w-full`}
+                    >
+                      <item.icon className="size-32 group-hover:text-primary transition-colors" />
+                      <h4
+                        className={`text-xl text-nowrap group-hover:text-primary duration-300`}
+                      >
+                        {item.title}
+                      </h4>
+                    </SidebarMenuButton>
+                  </SidebarMenuItem>
+                </NavLink>
+              </Collapsible>
+            ))}
+          </SidebarMenu>
 
 
-      <Button
-        variant='ghost'
-        className="mt-auto"
-        onClick={() => {
-          localStorage.removeItem('persist:userInfo')
-          navigate("/login", { replace: true })
-        }}
-      >
-        {
-          isOpen ? (
-            <><LogOut /> <span className={isOpen ? "w-full block" : "w-0 hidden"}>Log Out</span></>
-          ) : (
-            <TooltipWrapper
-              trigger={<LogOut className="cursor-pointer" />}
-              content={'Log Out'}
-            />
-          )
-        }
+        </SidebarContent>
 
-      </Button>
+        <SidebarFooter>
+          <SidebarMenu>
+            <SidebarMenuItem>
+              <SidebarMenuButton
+                onClick={() => {
+                  localStorage.removeItem('persist:userInfo')
+                  navigate("/login", { replace: true })
+                }}
+              >
+                <LogOut /> <span >Log Out</span>
+              </SidebarMenuButton>
+            </SidebarMenuItem>
+          </SidebarMenu>
+        </SidebarFooter>
+        <SidebarRail />
+      </Sidebar>
     </section>
-  );
-}
+  )
+};
