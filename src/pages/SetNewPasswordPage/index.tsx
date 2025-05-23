@@ -3,55 +3,54 @@ import loginImage from "../../assets/loginImage.png";
 import { z } from "zod";
 import { zodResolver } from "@hookform/resolvers/zod"
 import { useForm } from "react-hook-form"
+
 import { Button } from "../../components/ui/button"
 import {
   Form,
   FormControl,
-  FormDescription,
   FormField,
   FormItem,
   FormLabel,
   FormMessage,
 } from "../../components/ui/form"
 import { Input } from "@/components/ui/input"
-import { Link, useNavigate } from "react-router";
+import { useNavigate, useSearchParams } from "react-router";
 import { Eye, EyeOff } from "lucide-react";
 import { useState } from "react";
 import { toast } from "sonner";
-import { useAppDispatch } from "@/redux/hooks";
-import { storeUserInfo } from "@/redux/slices/authSlice";
-import { useUserLoginMutation } from "@/redux/endpoints/authApi";
+import { useSetNewPasswordMutation } from "@/redux/endpoints/authApi";
 
 const formSchema = z.object({
-  email: z.string().email().min(2),
-  password: z.string().min(8)
+  newPassword: z.string().min(8),
+  confirmPassword: z.string().min(8),
 })
 
-export default function LoginPage(): React.ReactNode {
-  const [userLogin, { isLoading, isSuccess, isError }] = useUserLoginMutation();
-  const dispatch = useAppDispatch();
-  const [isOpen, setIsOpen] = useState<boolean>(false);
+export default function SetNewPasswordPage(): React.ReactNode {
+  const [setPassword, { isLoading, isError, isSuccess }] = useSetNewPasswordMutation();
+  const [searchParams] = useSearchParams();
+  const token = searchParams.get('token');
+  const [isOpen, setIsOpen] = useState<boolean>(false)
   const navigate = useNavigate();
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
     defaultValues: {
-      email: "",
-      password: ""
+      newPassword: "",
+      confirmPassword: ""
     },
   });
 
   async function onSubmit(values: z.infer<typeof formSchema>) {
-    try {
-      const { data } = await userLogin(values);
+    console.log(values);
+    if (values.newPassword === values.confirmPassword) {
+      const { data } = await setPassword({ data: values, token });
       if (data.success) {
-        dispatch(storeUserInfo(data.data.accessToken));
-        toast.success("Successfully login")
-        navigate('/dashboard');
+        toast.success("Successfully change password")
+        navigate('/login');
+      } else {
+        toast.error("Something went wrong");
       }
-      // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    } catch (error: any) {
-      console.log({ error })
-      toast.error(error?.message)
+    } else if (values.newPassword !== values.confirmPassword) {
+      toast.error("Password not match")
     }
   }
 
@@ -65,23 +64,10 @@ export default function LoginPage(): React.ReactNode {
               <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-8">
                 <FormField
                   control={form.control}
-                  name="email"
+                  name="newPassword"
                   render={({ field }) => (
                     <FormItem>
-                      <FormLabel className="text-[#6B6B6B]">Email</FormLabel>
-                      <FormControl>
-                        <Input {...field} className="w-[316px]" autoComplete="off" placeholder="your@example.mail" />
-                      </FormControl>
-                      <FormMessage />
-                    </FormItem>
-                  )}
-                />
-                <FormField
-                  control={form.control}
-                  name="password"
-                  render={({ field }) => (
-                    <FormItem>
-                      <FormLabel className="text-[#6B6B6B]">Password</FormLabel>
+                      <FormLabel className="text-[#6B6B6B]">New Password</FormLabel>
                       <FormControl>
                         <div className="relative">
                           <Input {...field} className="w-[316px]" type={isOpen ? "text" : "password"} />
@@ -97,11 +83,30 @@ export default function LoginPage(): React.ReactNode {
                         </div>
                       </FormControl>
                       <FormMessage />
-                      <FormDescription className="text-end text-primary">
-                        <Link to='/forgot-password'>
-                          Forgot Password?
-                        </Link>
-                      </FormDescription>
+                    </FormItem>
+                  )}
+                />
+                <FormField
+                  control={form.control}
+                  name="confirmPassword"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel className="text-[#6B6B6B]">Confirm Password</FormLabel>
+                      <FormControl>
+                        <div className="relative">
+                          <Input {...field} className="w-[316px]" type={isOpen ? "text" : "password"} />
+                          <button
+                            className="absolute top-[6px] right-2 border-0 p-0 cursor-pointer"
+                            type="button"
+                            onClick={() => setIsOpen(!isOpen)}
+                          >
+                            {
+                              isOpen ? <Eye /> : <EyeOff />
+                            }
+                          </button>
+                        </div>
+                      </FormControl>
+                      <FormMessage />
                     </FormItem>
                   )}
                 />
@@ -113,7 +118,7 @@ export default function LoginPage(): React.ReactNode {
                   {
                     isLoading ? 'Loading...' :
                       isError ? 'Error' :
-                        'Login'
+                        'Submit'
                   }
                 </Button>
               </form>

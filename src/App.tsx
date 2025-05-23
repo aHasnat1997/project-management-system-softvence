@@ -1,11 +1,18 @@
-import { Button } from "./components/ui/button"
+import { useEffect } from "react";
+import { useNavigate } from "react-router";
+import useCurrentUser from "./hooks/useCurrentUser";
 
 export default function App() {
-  return (
-    <>
-      <h1 className="text-8xl font-semibold border-2 border-border">Hello World</h1>
-      <Button>Click me</Button>
-    </>
-  )
-}
+  const navigate = useNavigate();
+  const currentUser = useCurrentUser();
 
+  useEffect(() => {
+    if (currentUser) {
+      navigate("/dashboard", { replace: true });
+    } else {
+      navigate("/login", { replace: true });
+    }
+  }, [currentUser, navigate]);
+
+  return null;
+};
