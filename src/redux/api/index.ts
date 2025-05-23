@@ -19,5 +19,5 @@ export const baseApi = createApi({
     }
   }),
   endpoints: () => ({}),
-  tagTypes: ['auth', 'user', 'file-upload']
+  tagTypes: ['auth', 'user', 'file-upload', 'team', 'team-member']
 });
