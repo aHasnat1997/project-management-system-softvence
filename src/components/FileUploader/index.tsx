@@ -84,10 +84,10 @@ export default function FileUploader({
         <button
           type="button"
           onClick={() => fileInputRef.current?.click()}
-          className="py-10 px-20 rounded-md border-2 border-dotted border-primary bg-primary/20 flex flex-col items-center justify-center"
+          className="py-10 px-20 rounded-md border-2 border-dotted border-primary flex flex-col items-center justify-center"
         >
-          <CloudUpload />
-          Upload Files
+          <CloudUpload className="text-[#6B6B6B]" />
+          Upload files or  <span className="text-primary">Browse</span>
         </button>
         <Input
           type="file"
