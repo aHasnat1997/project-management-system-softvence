@@ -1,5 +1,4 @@
-import ColumnsFilter from "@/components/DataTable/columnsFilter";
-import { DataTable, type DataTableHandle } from "@/components/DataTable/dataTable";
+import { DataTable } from "@/components/DataTable/dataTable";
 import DialogWrapper from "@/components/DialogContents";
 import RegistrationContent from "@/components/DialogContents/registration";
 import Headers from "@/components/Headers";
@@ -8,17 +7,18 @@ import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Button } from "@/components/ui/button";
 import { Switch } from "@/components/ui/switch";
 import { useAllUsersQuery } from "@/redux/endpoints/userApi";
-import type { ColumnDef } from "@tanstack/react-table";
+import type { ColumnDef, ColumnFiltersState, VisibilityState } from "@tanstack/react-table";
 import { Eye, Filter, Plus } from "lucide-react";
-import { useRef, useState } from "react";
+import { useState } from "react";
 
 export default function MarketingProfile() {
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  const tableRef = useRef<DataTableHandle<any>>(null)
+  // const tableRef = useRef<DataTableHandle<any>>(null)
   const [page, setPage] = useState<number>(1);
   const [limit, setLimit] = useState<number>(15);
   const [searchTerm, setSearchTerm] = useState<string>("");
-  const { data: clientData, isLoading, isFetching } = useAllUsersQuery({ page, limit });
+  const [columnFilters, setColumnFilters] = useState<ColumnFiltersState>([]);
+  const [columnVisibility, setColumnVisibility] = useState<VisibilityState>({});
+  const { data: clientData, isLoading, isFetching } = useAllUsersQuery({ page, limit, searchTerm });
 
   type TEmployee = {
     _id: string
@@ -38,7 +38,6 @@ export default function MarketingProfile() {
     isDeleted: boolean
     isPasswordChanged: boolean
   };
-
   const columns: ColumnDef<TEmployee>[] = [
     {
       accessorKey: "avatar",
@@ -77,7 +76,7 @@ export default function MarketingProfile() {
       header: "Status",
       enableHiding: true,
       cell: ({ row }) => (
-        <Switch checked={row.original.userStatus === "Active" ? true : false} />
+        <Switch defaultChecked={row.original.userStatus === "Active" ? true : false} />
       ),
     },
   ];
@@ -96,9 +95,6 @@ export default function MarketingProfile() {
               <Filter /> Filter
             </Button>
 
-            <div>
-              <ColumnsFilter tableRef={tableRef} />
-            </div>
 
             <DialogWrapper
               trigger={
@@ -114,7 +110,6 @@ export default function MarketingProfile() {
 
       <DataTable<TEmployee>
         data={clientData?.data}
-        ref={tableRef}
         columns={columns}
         isLoading={isLoading || isFetching}
         page={page}
@@ -127,6 +122,10 @@ export default function MarketingProfile() {
             <Eye className="text-primary" />
           </span>
         )}
+        columnFilters={columnFilters}
+        setColumnFilters={setColumnFilters}
+        columnVisibility={columnVisibility}
+        setColumnVisibility={setColumnVisibility}
       />
     </section>
   );
