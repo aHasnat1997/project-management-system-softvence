@@ -7,7 +7,7 @@ import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Button } from "@/components/ui/button";
 import { Switch } from "@/components/ui/switch";
 import { useAllUsersQuery } from "@/redux/endpoints/userApi";
-import type { ColumnDef, ColumnFiltersState, VisibilityState } from "@tanstack/react-table";
+import type { ColumnDef } from "@tanstack/react-table";
 import { Eye, Filter, Plus } from "lucide-react";
 import { useState } from "react";
 
@@ -16,9 +16,9 @@ export default function MarketingProfile() {
   const [page, setPage] = useState<number>(1);
   const [limit, setLimit] = useState<number>(15);
   const [searchTerm, setSearchTerm] = useState<string>("");
-  const [columnFilters, setColumnFilters] = useState<ColumnFiltersState>([]);
-  const [columnVisibility, setColumnVisibility] = useState<VisibilityState>({});
-  const { data: clientData, isLoading, isFetching } = useAllUsersQuery({ page, limit, searchTerm });
+  // const [columnFilters, setColumnFilters] = useState<ColumnFiltersState>([]);
+  // const [columnVisibility, setColumnVisibility] = useState<VisibilityState>({});
+  const { data: usersData, isLoading, isFetching } = useAllUsersQuery({ page, limit, searchTerm });
 
   type TEmployee = {
     _id: string
@@ -109,12 +109,12 @@ export default function MarketingProfile() {
       </div>
 
       <DataTable<TEmployee>
-        data={clientData?.data}
+        data={usersData?.data}
         columns={columns}
         isLoading={isLoading || isFetching}
         page={page}
         limit={limit}
-        total={clientData?.meta?.total}
+        total={usersData?.meta?.total}
         onPageChange={setPage}
         onLimitChange={setLimit}
         actions={() => (
@@ -122,10 +122,10 @@ export default function MarketingProfile() {
             <Eye className="text-primary" />
           </span>
         )}
-        columnFilters={columnFilters}
-        setColumnFilters={setColumnFilters}
-        columnVisibility={columnVisibility}
-        setColumnVisibility={setColumnVisibility}
+      // columnFilters={columnFilters}
+      // setColumnFilters={setColumnFilters}
+      // columnVisibility={columnVisibility}
+      // setColumnVisibility={setColumnVisibility}
       />
     </section>
   );

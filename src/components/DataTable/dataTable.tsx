@@ -1,7 +1,7 @@
 import {
   type ColumnDef,
   type SortingState,
-  type ColumnFiltersState,
+  // type ColumnFiltersState,
   // type VisibilityState,
   getSortedRowModel,
   flexRender,
@@ -9,7 +9,7 @@ import {
   useReactTable,
   getPaginationRowModel,
   getFilteredRowModel,
-  type VisibilityState,
+  // type VisibilityState,
   type Table as TableType,
 } from "@tanstack/react-table"
 
@@ -50,10 +50,10 @@ export interface DataTableProps<TData, TValue> {
   onPageChange: (page: number) => void
   onLimitChange: (limit: number) => void
   actions?: (row: TData) => React.ReactNode
-  columnFilters: ColumnFiltersState
-  setColumnFilters: React.Dispatch<React.SetStateAction<ColumnFiltersState>>
-  columnVisibility: VisibilityState
-  setColumnVisibility: React.Dispatch<React.SetStateAction<VisibilityState>>
+  // columnFilters: ColumnFiltersState
+  // setColumnFilters: React.Dispatch<React.SetStateAction<ColumnFiltersState>>
+  // columnVisibility: VisibilityState
+  // setColumnVisibility: React.Dispatch<React.SetStateAction<VisibilityState>>
 }
 
 function DataTableInner<TData, TValue>(
@@ -66,10 +66,10 @@ function DataTableInner<TData, TValue>(
     total,
     onPageChange,
     actions,
-    columnFilters,
-    setColumnFilters,
-    columnVisibility,
-    setColumnVisibility,
+    // columnFilters,
+    // setColumnFilters,
+    // columnVisibility,
+    // setColumnVisibility,
   }: DataTableProps<TData, TValue>,
   ref: ForwardedRef<DataTableHandle<TData>>
 ) {
@@ -82,16 +82,16 @@ function DataTableInner<TData, TValue>(
     columns,
     state: {
       sorting,
-      columnFilters,
-      columnVisibility,
+      // columnFilters,
+      // columnVisibility,
       pagination: {
         pageIndex: page - 1,
         pageSize: limit,
       },
     },
     onSortingChange: setSorting,
-    onColumnFiltersChange: setColumnFilters,
-    onColumnVisibilityChange: setColumnVisibility,
+    // onColumnFiltersChange: setColumnFilters,
+    // onColumnVisibilityChange: setColumnVisibility,
     getCoreRowModel: getCoreRowModel(),
     getSortedRowModel: getSortedRowModel(),
     getFilteredRowModel: getFilteredRowModel(),
