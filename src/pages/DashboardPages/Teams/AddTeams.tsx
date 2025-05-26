@@ -19,6 +19,7 @@ import { Textarea } from '@/components/ui/textarea';
 import { SelectBySearch } from '@/components/SelectBySearch';
 import { useAllUsersQuery } from '@/redux/endpoints/userApi';
 import { Switch } from '@/components/ui/switch';
+import { useTeamCreateMutation } from '@/redux/endpoints/teamsApi';
 
 const formSchema = z.object({
     teamName: z.string().min(2, 'Team name must be at least 2 characters'),
@@ -28,6 +29,7 @@ const formSchema = z.object({
 });
 
 export default function AddTeams() {
+    const [createTeam, { isLoading, isSuccess, isError }] = useTeamCreateMutation();
     const [searchTerm, setSearchTerm] = useState('');
     const { data: users, isFetching } = useAllUsersQuery({
         searchTerm: searchTerm || undefined,
@@ -67,6 +69,12 @@ export default function AddTeams() {
             teamlogo: uploadedFile.secure_url,
             publicId: uploadedFile.public_id,
         };
+
+        try {
+            await createTeam(teamData);
+        } catch (error) {
+            console.error('Error creating team:', error);
+        }
 
         console.log('Form data to be submitted:', teamData);
         toast.success('Form data logged successfully! (Check console)');
