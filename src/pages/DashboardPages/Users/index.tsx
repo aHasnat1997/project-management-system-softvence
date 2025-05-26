@@ -6,10 +6,14 @@ import SearchInput from "@/components/SearchInput";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Button } from "@/components/ui/button";
 import { Switch } from "@/components/ui/switch";
-import { useAllUsersQuery } from "@/redux/endpoints/userApi";
+import { useAllUsersQuery, useUserUpdateMutation } from "@/redux/endpoints/userApi";
 import type { ColumnDef } from "@tanstack/react-table";
-import { Eye, Filter, Plus } from "lucide-react";
+import { Eye, Plus, Trash, Upload } from "lucide-react";
 import { useState } from "react";
+import UserDetails from "./page/UserDetails";
+import type { TEmployee } from "@/types";
+import UpdateDetails from "./page/UpdateDetails";
+import DeleteUser from "./page/DeleteUser";
 
 export default function UsersProfile() {
   // const tableRef = useRef<DataTableHandle<any>>(null)
@@ -19,25 +23,26 @@ export default function UsersProfile() {
   // const [columnFilters, setColumnFilters] = useState<ColumnFiltersState>([]);
   // const [columnVisibility, setColumnVisibility] = useState<VisibilityState>({});
   const { data: usersData, isLoading, isFetching } = useAllUsersQuery({ page, limit, searchTerm });
+  const [userUpdate, { isLoading: isUpdateLoading }] = useUserUpdateMutation();
 
-  type TEmployee = {
-    _id: string
-    avatar: string
-    createdAt: string
-    updatedAt: string
-    designation: string
-    email: string
-    employeeId: string
-    firstName: string
-    lastName: string
-    userName: string
-    phoneNumber: string
-    role: string
-    userStatus: "Active" | "Inactive"
-    isBlocked: boolean
-    isDeleted: boolean
-    isPasswordChanged: boolean
-  };
+  const handleUserStatusChange = async (userId: string, currentStatus: "Active" | "Deactivate") => {
+    const newStatus = currentStatus === "Active" ? "Deactivate" : "Active";
+    // Create FormData
+    const data = {
+      userStatus: newStatus
+    }
+    const formData = new FormData();
+    formData.append("data", JSON.stringify(data));
+
+    try {
+      await userUpdate({ id: userId, data: formData }).unwrap();
+      // Optionally, you can show a success message or update the UI accordingly
+    } catch (error) {
+      console.error("Failed to update user status:", error);
+      // Optionally, you can show an error message
+    }
+  }
+
   const columns: ColumnDef<TEmployee>[] = [
     {
       accessorKey: "avatar",
@@ -75,9 +80,15 @@ export default function UsersProfile() {
       accessorKey: "userStatus",
       header: "Status",
       enableHiding: true,
-      cell: ({ row }) => (
-        <Switch defaultChecked={row.original.userStatus === "Active" ? true : false} />
-      ),
+      cell: ({ row }) => {
+        return <div>
+          <Switch
+            defaultChecked={row.original.userStatus === "Active" ? true : false}
+            onCheckedChange={() => handleUserStatusChange(row.original._id, row.original.userStatus)}
+            disabled={isUpdateLoading}
+          />
+        </div>
+      },
     },
   ];
 
@@ -90,11 +101,6 @@ export default function UsersProfile() {
               value={searchTerm}
               onChange={setSearchTerm}
             />
-
-            <Button variant="outline" className="hidden md:flex">
-              <Filter /> Filter
-            </Button>
-
 
             <DialogWrapper
               trigger={
@@ -117,10 +123,27 @@ export default function UsersProfile() {
         total={usersData?.meta?.total}
         onPageChange={setPage}
         onLimitChange={setLimit}
-        actions={() => (
-          <span className="px-2">
-            <Eye className="text-primary" />
-          </span>
+        actions={(row) => (
+          <div className="px-2 flex items-center gap-2">
+            <DialogWrapper
+              trigger={
+                <Eye className="duration-150 hover:text-primary text-muted-foreground" />
+              }
+              content={<UserDetails userId={row._id} />}
+            />
+            <DialogWrapper
+              trigger={
+                <Upload className="duration-150 hover:text-primary text-muted-foreground" />
+              }
+              content={<UpdateDetails userData={row} />}
+            />
+            <DialogWrapper
+              trigger={
+                <Trash className="duration-150 hover:text-primary text-muted-foreground" />
+              }
+              content={<DeleteUser userId={row._id} />}
+            />
+          </div>
         )}
       // columnFilters={columnFilters}
       // setColumnFilters={setColumnFilters}
