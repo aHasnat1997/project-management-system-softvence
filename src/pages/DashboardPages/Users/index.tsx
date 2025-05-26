@@ -8,7 +8,7 @@ import { Button } from "@/components/ui/button";
 import { Switch } from "@/components/ui/switch";
 import { useAllUsersQuery, useUserUpdateMutation } from "@/redux/endpoints/userApi";
 import type { ColumnDef } from "@tanstack/react-table";
-import { Eye, Plus, Trash, Upload } from "lucide-react";
+import { Eye, Plus, SquarePen, Trash } from "lucide-react";
 import { useState } from "react";
 import UserDetails from "./page/UserDetails";
 import type { TEmployee } from "@/types";
@@ -133,7 +133,7 @@ export default function UsersProfile() {
             />
             <DialogWrapper
               trigger={
-                <Upload className="duration-150 hover:text-primary text-muted-foreground" />
+                <SquarePen className="duration-150 hover:text-primary text-muted-foreground" />
               }
               content={<UpdateDetails userData={row} />}
             />

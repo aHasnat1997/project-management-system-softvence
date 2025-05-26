@@ -5,16 +5,22 @@ import Headers from "@/components/Headers"
 import SearchInput from "@/components/SearchInput"
 import { Button } from "@/components/ui/button"
 import { useAllProjectsQuery } from "@/redux/endpoints/projectsApi"
-import type { TProjectRes } from "@/types"
+import type { TProject } from "@/types"
 import type { ColumnDef } from "@tanstack/react-table"
-import { Filter, Plus } from "lucide-react"
+import { Eye, Filter, Plus, Trash, Upload } from "lucide-react"
 import { useState } from "react"
+import { useNavigate } from "react-router"
 
 export default function Project() {
+  const navigate = useNavigate();
   const [page, setPage] = useState<number>(1);
   const [limit, setLimit] = useState<number>(15);
   const [searchTerm, setSearchTerm] = useState<string>("");
   const { data: projectsData, isLoading, isFetching } = useAllProjectsQuery({ page, limit, searchTerm });
+
+  console.log("projectsData", projectsData)
+
+
   // const [files, setFiles] = useState<CloudinaryUploadResponse[]>([]);
 
   // const handleUploadSuccess = (uploaded: CloudinaryUploadResponse[]) => {
@@ -25,59 +31,58 @@ export default function Project() {
   //   setFiles((prev) => prev.filter((file) => file.public_id !== publicId));
   // };
 
-  const columns: ColumnDef<TProjectRes>[] = [
+  const columns: ColumnDef<TProject>[] = [
     {
       accessorKey: "clientName",
       header: "Client Name",
       enableHiding: true,
     },
-    {
-      accessorKey: "sellsBy",
-      header: "Sells By",
-      enableHiding: true
-    },
-    {
-      accessorKey: "orderStartDate",
-      header: "Start Date",
-      enableHiding: true,
-    },
-    {
-      accessorKey: "assignedBy",
-      header: "Assigned By",
-      enableHiding: true,
-    },
-    {
-      accessorKey: "leadBy",
-      header: "Lead By",
-      enableHiding: true,
-    },
-    {
-      accessorKey: "deliveryDate",
-      header: "Delivery Date",
-      enableHiding: true,
-    }
+    // {
+    //   accessorKey: "sellsBy",
+    //   header: "Sells By",
+    //   enableHiding: true
+    // },
+    // {
+    //   accessorKey: "orderStartDate",
+    //   header: "Start Date",
+    //   enableHiding: true,
+    // },
+    // {
+    //   accessorKey: "assignedBy",
+    //   header: "Assigned By",
+    //   enableHiding: true,
+    // },
+    // {
+    //   accessorKey: "leadBy",
+    //   header: "Lead By",
+    //   enableHiding: true,
+    // },
+    // {
+    //   accessorKey: "deliveryDate",
+    //   header: "Delivery Date",
+    //   enableHiding: true,
+    // }
   ];
 
   return (
     <section>
-      <Headers title="Project">
-        <div className="flex items-center gap-2">
-          <SearchInput value={searchTerm} onChange={setSearchTerm} />
-          <Button variant="outline" className="hidden md:flex">
-            <Filter /> Filter
-          </Button>
-          <DialogWrapper
-            trigger={
-              <Button>
-                <Plus /> Add Project
-              </Button>
-            }
-            content={<h1>Add Project</h1>}
-          />
-        </div>
-      </Headers>
+      <div className="mb-4">
+        <Headers title="Project">
+          <div className="flex items-center gap-2">
+            <SearchInput value={searchTerm} onChange={setSearchTerm} />
+            <Button variant="outline" className="hidden md:flex">
+              <Filter /> Filter
+            </Button>
+            <Button
+              onClick={() => { navigate('/dashboard/projects/add-project') }}
+            >
+              <Plus /> Add Project
+            </Button>
+          </div>
+        </Headers>
+      </div>
 
-      <DataTable<TProjectRes>
+      <DataTable<TProject>
         data={projectsData?.data}
         columns={columns}
         isLoading={isLoading || isFetching}
@@ -86,17 +91,29 @@ export default function Project() {
         total={projectsData?.meta?.total}
         onPageChange={setPage}
         onLimitChange={setLimit}
+        actions={(row) => (
+          <div className="px-2 flex items-center gap-2">
+            <DialogWrapper
+              trigger={
+                <Eye className="duration-150 hover:text-primary text-muted-foreground" />
+              }
+              content={<></>}
+            />
+            <DialogWrapper
+              trigger={
+                <Upload className="duration-150 hover:text-primary text-muted-foreground" />
+              }
+              content={<></>}
+            />
+            <DialogWrapper
+              trigger={
+                <Trash className="duration-150 hover:text-primary text-muted-foreground" />
+              }
+              content={<></>}
+            />
+          </div>
+        )}
       />
-
-      {/* <div>
-        <FileUploader
-          folder="my_uploads"
-          allowedFormats={["image/*", "application/pdf"]}
-          fileData={files}
-          onUploadSuccess={handleUploadSuccess}
-          onDeleteSuccess={handleDeleteSuccess}
-        />
-      </div> */}
     </section>
   )
 };
