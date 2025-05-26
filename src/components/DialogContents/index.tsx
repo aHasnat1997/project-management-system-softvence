@@ -11,7 +11,7 @@ export default function DialogWrapper({
         <Dialog>
             <DialogTrigger asChild>{trigger}</DialogTrigger>
 
-            <DialogContent>{content}</DialogContent>
+            <DialogContent className="!w-[900px]">{content}</DialogContent>
         </Dialog>
     );
 }

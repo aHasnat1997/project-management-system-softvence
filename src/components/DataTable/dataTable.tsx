@@ -1,7 +1,7 @@
 import {
   type ColumnDef,
   type SortingState,
-  type ColumnFiltersState,
+  // type ColumnFiltersState,
   // type VisibilityState,
   getSortedRowModel,
   flexRender,
@@ -9,7 +9,8 @@ import {
   useReactTable,
   getPaginationRowModel,
   getFilteredRowModel,
-  type VisibilityState,
+  // type VisibilityState,
+  type Table as TableType,
 } from "@tanstack/react-table"
 
 import {
@@ -30,12 +31,15 @@ import React, {
   useImperativeHandle,
   type ForwardedRef,
 } from "react"
+import { Pagination, PaginationContent, PaginationEllipsis, PaginationItem, PaginationLink } from "../ui/pagination"
+
 
 export interface DataTableHandle<TData> {
-  table: ReturnType<typeof useReactTable<TData>>
+  // table: ReturnType<typeof useReactTable<TData>>
+  table: TableType<TData>
 }
 
-interface DataTableProps<TData, TValue> {
+export interface DataTableProps<TData, TValue> {
   columns: ColumnDef<TData, TValue>[]
   data: TData[]
   isLoading?: boolean
@@ -46,6 +50,10 @@ interface DataTableProps<TData, TValue> {
   onPageChange: (page: number) => void
   onLimitChange: (limit: number) => void
   actions?: (row: TData) => React.ReactNode
+  // columnFilters: ColumnFiltersState
+  // setColumnFilters: React.Dispatch<React.SetStateAction<ColumnFiltersState>>
+  // columnVisibility: VisibilityState
+  // setColumnVisibility: React.Dispatch<React.SetStateAction<VisibilityState>>
 }
 
 function DataTableInner<TData, TValue>(
@@ -58,28 +66,32 @@ function DataTableInner<TData, TValue>(
     total,
     onPageChange,
     actions,
+    // columnFilters,
+    // setColumnFilters,
+    // columnVisibility,
+    // setColumnVisibility,
   }: DataTableProps<TData, TValue>,
   ref: ForwardedRef<DataTableHandle<TData>>
 ) {
   const [sorting, setSorting] = useState<SortingState>([]);
-  const [columnFilters, setColumnFilters] = useState<ColumnFiltersState>([]);
-  const [columnVisibility, setColumnVisibility] = useState<VisibilityState>({});
+  // const [columnFilters, setColumnFilters] = useState<ColumnFiltersState>([]);
+  // const [columnVisibility, setColumnVisibility] = useState<VisibilityState>({});
 
   const table = useReactTable({
     data,
     columns,
     state: {
       sorting,
-      columnFilters,
-      columnVisibility,
+      // columnFilters,
+      // columnVisibility,
       pagination: {
         pageIndex: page - 1,
         pageSize: limit,
       },
     },
     onSortingChange: setSorting,
-    onColumnFiltersChange: setColumnFilters,
-    onColumnVisibilityChange: setColumnVisibility,
+    // onColumnFiltersChange: setColumnFilters,
+    // onColumnVisibilityChange: setColumnVisibility,
     getCoreRowModel: getCoreRowModel(),
     getSortedRowModel: getSortedRowModel(),
     getFilteredRowModel: getFilteredRowModel(),
@@ -107,8 +119,8 @@ function DataTableInner<TData, TValue>(
     ))
 
   return (
-    <div>
-      <div className="rounded-md border">
+    <div className="h-[84vh] rounded-md border flex flex-col">
+      <div className="border-b">
         <Table>
           <TableHeader>
             {table.getHeaderGroups().map((headerGroup) => (
@@ -153,23 +165,69 @@ function DataTableInner<TData, TValue>(
         </Table>
       </div>
 
-      <div className="flex items-center justify-end space-x-2 py-4">
-        <Button
-          variant="outline"
-          size="sm"
-          onClick={() => onPageChange(page - 1)}
-          disabled={page === 1}
-        >
-          Previous
-        </Button>
-        <Button
-          variant="outline"
-          size="sm"
-          onClick={() => onPageChange(page + 1)}
-          disabled={page * limit >= total}
-        >
-          Next
-        </Button>
+      <div className="mt-auto flex items-center justify-between space-x-2 p-4">
+        <div className="text-[#54607A]">
+          Showing {limit <= total ? limit : total} Result from {total} Total Data
+        </div>
+        <div>
+          <div>
+            <Pagination>
+              <PaginationContent>
+                <PaginationItem>
+                  <Button
+                    variant="outline"
+                    size="sm"
+                    onClick={() => onPageChange(page - 1)}
+                    disabled={page === 1}
+                    className="py-[1.1rem]"
+                  >
+                    Previous
+                  </Button>
+                </PaginationItem>
+
+                {/* Dynamic pagination numbers */}
+                {Array.from({ length: Math.ceil(total / limit) }, (_, i) => i + 1)
+                  .slice(
+                    Math.max(0, page - 3),
+                    Math.min(Math.ceil(total / limit), page + 2)
+                  )
+                  .map((pageNumber) => (
+                    <PaginationItem key={pageNumber}>
+                      <PaginationLink
+                        isActive={pageNumber === page}
+                        onClick={(e) => {
+                          e.preventDefault()
+                          onPageChange(pageNumber)
+                        }}
+                        className={`border-primary ${pageNumber === page ? 'text-primary' : ''}`}
+                      >
+                        {pageNumber}
+                      </PaginationLink>
+                    </PaginationItem>
+                  ))}
+
+                {page + 2 < Math.ceil(total / limit) && (
+                  <PaginationItem>
+                    <PaginationEllipsis />
+                  </PaginationItem>
+                )}
+
+                <PaginationItem>
+                  <Button
+                    variant="outline"
+                    size="sm"
+                    onClick={() => onPageChange(page + 1)}
+                    disabled={page * limit >= total}
+                    className="py-[1.1rem]"
+                  >
+                    Next
+                  </Button>
+                </PaginationItem>
+              </PaginationContent>
+            </Pagination>
+          </div>
+
+        </div>
       </div>
     </div>
   )
