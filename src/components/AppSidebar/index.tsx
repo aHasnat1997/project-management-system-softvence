@@ -30,8 +30,8 @@ export default function AppSidebar({ ...props }: React.ComponentProps<typeof Sid
     // Menu items.
     const items = [
         { title: 'Dashboard', url: '/dashboard', icon: LayoutGrid, end: true },
-        { title: 'Project Table', url: '/dashboard/project-table', icon: Table, end: true },
-        { title: 'Marketing Profile', url: '/dashboard/marketing-profile', icon: PieChart, end: true, },
+        { title: 'Users', url: '/dashboard/users', icon: PieChart, end: true, },
+        { title: 'Projects', url: '/dashboard/projects', icon: Table, end: true },
         { title: 'Member', url: '/dashboard/member', icon: UsersRound, end: true },
         { title: 'Project Add', url: '/dashboard/project-add', icon: FilePlus, end: true },
         { title: 'Project Assign', url: '/dashboard/project-assign', icon: UserPlus, end: true },
