@@ -11,7 +11,7 @@ import type { ColumnDef } from "@tanstack/react-table";
 import { Eye, Filter, Plus } from "lucide-react";
 import { useState } from "react";
 
-export default function MarketingProfile() {
+export default function UsersProfile() {
   // const tableRef = useRef<DataTableHandle<any>>(null)
   const [page, setPage] = useState<number>(1);
   const [limit, setLimit] = useState<number>(15);
