@@ -34,3 +34,22 @@ export type TChangePassword = {
   newPassword: string;
   confirmPassword: string;
 };
+
+export type TEmployee = {
+  _id: string
+  avatar: string
+  createdAt: string
+  updatedAt: string
+  designation: string
+  email: string
+  employeeId: string
+  firstName: string
+  lastName: string
+  userName: string
+  phoneNumber: string
+  role: "Admin" | "Management" | "Sells" | "Operation"
+  userStatus: "Active" | "Deactivate"
+  isBlocked: boolean
+  isDeleted: boolean
+  isPasswordChanged: boolean
+};
