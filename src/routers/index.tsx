@@ -11,6 +11,7 @@ import Users from '@/pages/DashboardPages/Users';
 import NotFoundPage from '@/pages/NotFoundPage';
 import Teams from '@/pages/DashboardPages/Teams';
 import Project from '@/pages/DashboardPages/Project';
+import CreateProject from '@/pages/DashboardPages/Project/page/CreateProject';
 
 export default function AppRoutes() {
     return (
@@ -35,7 +36,10 @@ export default function AppRoutes() {
                 >
                     <Route index element={<Home />} />
                     <Route path="users" element={<Users />} />
-                    <Route path="projects" element={<Project />} />
+                    <Route path="projects">
+                        <Route index element={<Project />} />
+                        <Route path="add-project" element={<CreateProject />} />
+                    </Route>
                     <Route path="team" element={<Teams />} />
                 </Route>
             </Routes>
