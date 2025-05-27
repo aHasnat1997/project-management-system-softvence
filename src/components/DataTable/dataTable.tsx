@@ -77,9 +77,6 @@ function DataTableInner<TData, TValue>(
   // const [columnFilters, setColumnFilters] = useState<ColumnFiltersState>([]);
   // const [columnVisibility, setColumnVisibility] = useState<VisibilityState>({});
 
-  console.log("DataTableInner", data);
-
-
   const table = useReactTable({
     data,
     columns,

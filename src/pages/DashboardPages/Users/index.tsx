@@ -139,7 +139,7 @@ export default function UsersProfile() {
             />
             <DialogWrapper
               trigger={
-                <Trash className="duration-150 hover:text-primary text-muted-foreground" />
+                <Trash className="duration-150 hover:text-red-500 text-muted-foreground" />
               }
               content={<DeleteUser userId={row._id} />}
             />

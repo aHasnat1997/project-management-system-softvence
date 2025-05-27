@@ -39,8 +39,6 @@ export default function AppSidebar({ ...props }: React.ComponentProps<typeof Sid
         { title: 'Team', url: '/dashboard/team', icon: Users, end: true },
     ];
 
-    console.log('items', items);
-
     return (
         <section className="">
             <Sidebar collapsible="icon" {...props} className="pt-[60px]">
