@@ -2,7 +2,7 @@
 
 import * as React from 'react';
 import { useState, useMemo } from 'react';
-import { Check, ChevronsUpDown } from 'lucide-react';
+import { Check, ChevronsUpDown, Loader } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import { Button } from '@/components/ui/button';
 import {
@@ -30,6 +30,7 @@ interface SelectBySearchProps<T extends { _id: string }> {
     onValueChange: (value: string) => void;
     onSearchChange?: (searchTerm: string) => void;
     className?: string;
+    initialSelectedItem?: T;
 }
 
 export function SelectBySearch<T extends { _id: string; [displayKey: string]: string }>({
@@ -46,13 +47,23 @@ export function SelectBySearch<T extends { _id: string; [displayKey: string]: st
     onValueChange,
     onSearchChange,
     className,
+    initialSelectedItem,
 }: SelectBySearchProps<T>): React.JSX.Element {
     const [open, setOpen] = useState<boolean>(false);
     const [searchTerm, setSearchTerm] = useState<string>('');
 
     const selectedItem = useMemo(() => {
-        return data.find(item => item._id === value);
-    }, [value, data]);
+        // First try to find in the current data
+        const foundInData = data.find(item => item._id === value);
+        if (foundInData) return foundInData;
+
+        // If not found and we have an initial selected item, use that
+        if (initialSelectedItem && initialSelectedItem._id === value) {
+            return initialSelectedItem;
+        }
+
+        return undefined;
+    }, [value, data, initialSelectedItem]);
 
     const displayedItems = useMemo(() => {
         return data.slice(0, limit);
@@ -89,7 +100,11 @@ export function SelectBySearch<T extends { _id: string; [displayKey: string]: st
                     disabled={isLoading || isFetching}
                 >
                     {isLoading || isFetching ? (
-                        <Skeleton className="h-4 w-[80%]" />
+                        <Skeleton className="h-4 w-[80%]">
+                            <span className="flex items-center gap-2">
+                                <Loader className=" animate-spin" /> Loading...
+                            </span>
+                        </Skeleton>
                     ) : value && selectedItem ? (
                         getDisplayValue(selectedItem)
                     ) : (

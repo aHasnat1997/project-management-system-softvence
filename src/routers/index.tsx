@@ -7,10 +7,11 @@ import ForgotPasswordPage from '@/pages/ForgotPasswordPage';
 import SetNewPasswordPage from '@/pages/SetNewPasswordPage';
 import ResetPasswordPage from '@/pages/ResetPasswordPage';
 import ProtectedRoute from './ProtectedRoute';
-import Member from '@/pages/DashboardPages/Project';
-import Users from '@/pages/DashboardPages/MarketingProfile';
+import Users from '@/pages/DashboardPages/Users';
 import NotFoundPage from '@/pages/NotFoundPage';
 import Teams from '@/pages/DashboardPages/Teams';
+import Project from '@/pages/DashboardPages/Project';
+import CreateProject from '@/pages/DashboardPages/Project/page/CreateProject';
 
 export default function AppRoutes() {
     return (
@@ -34,8 +35,11 @@ export default function AppRoutes() {
                     }
                 >
                     <Route index element={<Home />} />
-                    <Route path="project-table" element={<Member />} />
-                    <Route path="marketing-profile" element={<Users />} />
+                    <Route path="users" element={<Users />} />
+                    <Route path="projects">
+                        <Route index element={<Project />} />
+                        <Route path="add-project" element={<CreateProject />} />
+                    </Route>
                     <Route path="team" element={<Teams />} />
                 </Route>
             </Routes>
