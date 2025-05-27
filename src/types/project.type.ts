@@ -1,35 +1,54 @@
-type TTeam = {
+type TAssignedTeam = {
   _id: string;
   teamName: string;
   slug: string;
   teamlogo: string;
   teamDescription: string;
-  status: 'active' | 'inactive' | string;
+  status: string;
   teamLead: string;
   teamMembers: string[];
   completedProjects: string[];
   assignProjects: string[];
   members: string[];
-  createdAt: string; // ISO date string
-  updatedAt: string; // ISO date string
+  createdAt: string;
+  updatedAt: string;
   __v: number;
 };
 
-export type TProjectRes = {
+type TUserRef = {
   _id: string;
-  clientName: string;
-  sellsBy: string | null;
-  orderStartDate: string; // ISO date string
-  assignedTeam: TTeam[];
-  assignedBy: string | null;
-  leadBy: string | null;
-  deliveryDate: string; // ISO date string
-  platfrom: string;
-  marketingProfile: string;
-  projectStatus: 'in_progress' | 'completed' | 'pending' | string;
-  orderSheet: string;
-  specialNote: string;
-  createdAt: string; // ISO date string
-  updatedAt: string; // ISO date string
+  userName: string;
+  firstName: string;
+  lastName: string;
+  employeeId: string;
+  email: string;
+  isPasswordChanged: boolean;
+  phoneNumber: string;
+  avatar: string;
+  designation: string;
+  role: string;
+  userStatus: "Active" | "Deactivate";
+  isBlocked: boolean;
+  isDeleted: boolean;
+  createdAt: string;
+  updatedAt: string;
+  __v: number;
 };
 
+export type TProject = {
+  _id: string;
+  clientName: string;
+  sellsBy: TUserRef;
+  orderStartDate: string;
+  assignedTeam: TAssignedTeam[];
+  assignedBy: TUserRef;
+  leadBy: TUserRef;
+  deliveryDate: string;
+  platform: string;
+  marketingProfile: string;
+  projectStatus: "WIP" | "Completed" | "Pending" | string; // Add other possible statuses
+  orderSheet: string;
+  specialNote: string;
+  createdAt: string;
+  updatedAt: string;
+};

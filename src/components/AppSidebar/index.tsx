@@ -2,7 +2,6 @@ import * as React from 'react';
 import {
     Table,
     PieChart,
-    FilePlus,
     UserPlus,
     AlertCircle,
     MessagesSquare,
@@ -30,18 +29,15 @@ export default function AppSidebar({ ...props }: React.ComponentProps<typeof Sid
     // Menu items.
     const items = [
         { title: 'Dashboard', url: '/dashboard', icon: LayoutGrid, end: true },
-        { title: 'Project Table', url: '/dashboard/project-table', icon: Table, end: true },
-        { title: 'Marketing Profile', url: '/dashboard/marketing-profile', icon: PieChart, end: true, },
+        { title: 'Users', url: '/dashboard/users', icon: PieChart, end: true, },
+        { title: 'Projects', url: '/dashboard/projects', icon: Table, end: false },
         { title: 'Member', url: '/dashboard/member', icon: UsersRound, end: true },
-        { title: 'Project Add', url: '/dashboard/project-add', icon: FilePlus, end: true },
         { title: 'Project Assign', url: '/dashboard/project-assign', icon: UserPlus, end: true },
         { title: 'Project Issue', url: '/dashboard/project-issue', icon: AlertCircle, end: true },
         { title: 'Project Message', url: '/dashboard/project-message', icon: MessagesSquare, end: true, },
         { title: 'Project Resource', url: '/dashboard/project-resource', icon: ClipboardCheck, end: true, },
         { title: 'Team', url: '/dashboard/team', icon: Users, end: true },
     ];
-
-    console.log('items', items);
 
     return (
         <section className="">
