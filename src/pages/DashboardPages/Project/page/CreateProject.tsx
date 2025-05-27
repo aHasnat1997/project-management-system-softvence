@@ -3,7 +3,7 @@ import { Button } from "@/components/ui/button";
 import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
-import { useProjectCreateMutation } from "@/redux/endpoints/projectsApi";
+// import { useProjectCreateMutation } from "@/redux/endpoints/projectsApi";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { ArrowLeft } from "lucide-react";
 import { useForm } from "react-hook-form";
@@ -25,7 +25,7 @@ const formSchema = z.object({
 });
 
 export default function CreateProject() {
-  const [createProject, { isLoading }] = useProjectCreateMutation();
+  // const [createProject, { isLoading }] = useProjectCreateMutation();
 
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
@@ -292,12 +292,15 @@ export default function CreateProject() {
                 onClick={() => {
                   form.reset();
                 }}
-                disabled={isLoading}
+              // disabled={isLoading}
               >
                 Reset
               </Button>
-              <Button type="submit" disabled={isLoading} className="flex-1">
+              {/* <Button type="submit" disabled={isLoading} className="flex-1">
                 {isLoading ? 'Registering...' : 'Register'}
+              </Button> */}
+              <Button type="submit" className="flex-1">
+                Register
               </Button>
             </div>
           </form>
