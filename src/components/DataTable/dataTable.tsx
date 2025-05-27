@@ -71,6 +71,64 @@ function DataTableInner<TData, TValue>(
     DataTableProps<TData, TValue>,
     ref: ForwardedRef<DataTableHandle<TData>>
 ) {
+  const [sorting, setSorting] = useState<SortingState>([]);
+  // const [columnFilters, setColumnFilters] = useState<ColumnFiltersState>([]);
+  // const [columnVisibility, setColumnVisibility] = useState<VisibilityState>({});
+
+  const table = useReactTable({
+    data,
+    columns,
+    state: {
+      sorting,
+      // columnFilters,
+      // columnVisibility,
+      pagination: {
+        pageIndex: page - 1,
+        pageSize: limit,
+      },
+    },
+    onSortingChange: setSorting,
+    // onColumnFiltersChange: setColumnFilters,
+    // onColumnVisibilityChange: setColumnVisibility,
+    getCoreRowModel: getCoreRowModel(),
+    getSortedRowModel: getSortedRowModel(),
+    getFilteredRowModel: getFilteredRowModel(),
+    getPaginationRowModel: getPaginationRowModel(),
+    manualPagination: true,
+    pageCount: Math.ceil(total / limit),
+  })
+
+  useImperativeHandle(ref, () => ({ table }), [table])
+
+  const renderSkeleton = () =>
+    [...Array(limit)].map((_, rowIndex) => (
+      <TableRow key={`skeleton-${rowIndex}`}>
+        {columns.map((_, colIndex) => (
+          <TableCell key={`skeleton-cell-${colIndex}`}>
+            <Skeleton className="h-6 w-full" />
+          </TableCell>
+        ))}
+        {actions && (
+          <TableCell className="text-right flex items-center justify-end">
+            <Skeleton className="h-6 w-16" />
+          </TableCell>
+        )}
+      </TableRow>
+    ))
+
+  return (
+    <div className="h-[84vh] rounded-md border flex flex-col">
+      <div className="border-b">
+        <Table>
+          <TableHeader>
+            {table.getHeaderGroups().map((headerGroup) => (
+              <TableRow key={headerGroup.id}>
+                {headerGroup.headers.map((header) => (
+                  <TableHead key={header.id} className="text-muted-foreground">
+                    {header.isPlaceholder
+                      ? null
+                      : flexRender(header.column.columnDef.header, header.getContext())}
+                  </TableHead>
     const [sorting, setSorting] = useState<SortingState>([]);
     // const [columnFilters, setColumnFilters] = useState<ColumnFiltersState>([]);
     // const [columnVisibility, setColumnVisibility] = useState<VisibilityState>({});
