@@ -6,10 +6,12 @@ import SearchInput from '@/components/SearchInput';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import { Button } from '@/components/ui/button';
 import type { ColumnDef } from '@tanstack/react-table';
-import { Edit, Filter, Plus } from 'lucide-react';
+import { Edit, Eye, Filter, Plus, Trash } from 'lucide-react';
 import { useAllTeamsQuery } from '@/redux/endpoints/teamsApi';
 import type { TTeam } from '@/types/teams.type';
 import TeamForm from './TeamForm';
+import DeleteTeam from './DeleteTeam';
+import TeamDetails from './TeamDetails';
 
 export default function Teams() {
     const [page, setPage] = useState<number>(1);
@@ -125,39 +127,46 @@ export default function Teams() {
                 total={teamsData?.data?.meta?.total || 0}
                 onPageChange={setPage}
                 onLimitChange={setLimit}
-                actions={({ teamName, teamDescription, status, teamLead, teamlogo, slug }) => (
-                    <Button
-                        variant="ghost"
-                        size="sm"
-                        onClick={() => {
-                            // Handle view team details
-                            // console.log('View team:', row.original);
-                        }}
-                    >
-                        <DialogWrapper
-                            trigger={
-                                <Button>
-                                    <Edit />
-                                </Button>
-                            }
-                            content={
-                                <TeamForm
-                                    mode="edit"
-                                    initialValues={{
-                                        teamName: teamName || '',
-                                        teamDescription: teamDescription || '',
-                                        status: status,
-                                        teamLead: teamLead?._id || '',
-                                        teamlogo: teamlogo || '',
-                                        publicId: 'folder/image',
-                                    }}
-                                    teamSlug={slug}
-                                    onSuccess={() => {}}
-                                />
-                            }
-                        />
-                    </Button>
-                )}
+                actions={row => {
+                    return (
+                        <div className="flex gap-2">
+                            <DialogWrapper
+                                trigger={
+                                    <Eye className="duration-150 hover:text-primary text-muted-foreground" />
+                                }
+                                content={<TeamDetails slug={row?.slug} />}
+                            />
+
+                            <DialogWrapper
+                                trigger={
+                                    <Edit className="cursor-pointer duration-150 hover:text-primary text-muted-foreground" />
+                                }
+                                content={
+                                    <TeamForm
+                                        mode="edit"
+                                        initialValues={{
+                                            teamName: row.teamName || '',
+                                            teamDescription: row.teamDescription || '',
+                                            status: row.status,
+                                            teamLead: row.teamLead?._id || '',
+                                            teamlogo: row.teamlogo || '',
+                                            publicId: 'folder/image',
+                                        }}
+                                        teamSlug={row.slug}
+                                        onSuccess={() => {}}
+                                    />
+                                }
+                            />
+
+                            <DialogWrapper
+                                trigger={
+                                    <Trash className="duration-150 hover:text-primary  text-red-600" />
+                                }
+                                content={<DeleteTeam slug={row?.slug} />}
+                            />
+                        </div>
+                    );
+                }}
             />
         </section>
     );

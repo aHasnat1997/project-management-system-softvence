@@ -39,6 +39,14 @@ export const teamsApi = baseApi.injectEndpoints({
             }),
             invalidatesTags: ['team'],
         }),
+        teamDelete: build.mutation({
+            query: slug => ({
+                url: `/teams/${slug}`,
+                method: 'DELETE',
+                credentials: 'include',
+            }),
+            invalidatesTags: ['team'],
+        }),
     }),
 });
 
@@ -47,4 +55,5 @@ export const {
     useAllTeamsQuery,
     useSingleTeamQuery,
     useTeamUpdateMutation,
+    useTeamDeleteMutation,
 } = teamsApi;
