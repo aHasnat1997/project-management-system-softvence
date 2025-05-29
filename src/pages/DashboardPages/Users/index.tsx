@@ -1,6 +1,6 @@
 import { DataTable } from "@/components/DataTable/dataTable";
 import DialogWrapper from "@/components/DialogContents";
-import RegistrationContent from "@/components/DialogContents/registration";
+import RegistrationContent from "./page/registration";
 import Headers from "@/components/Headers";
 import SearchInput from "@/components/SearchInput";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
