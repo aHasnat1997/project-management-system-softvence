@@ -2,7 +2,7 @@ import type React from 'react';
 import { z } from 'zod';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { useForm } from 'react-hook-form';
-import { Button } from '../../components/ui/button';
+import { Button } from '../../../../components/ui/button';
 import {
     Form,
     FormControl,
@@ -10,7 +10,7 @@ import {
     FormItem,
     FormLabel,
     FormMessage,
-} from '../../components/ui/form';
+} from '../../../../components/ui/form';
 import { Input } from '@/components/ui/input';
 import { toast } from 'sonner';
 import {
@@ -21,7 +21,7 @@ import {
     SelectValue,
 } from '@/components/ui/select';
 import { useUserCreateMutation } from '@/redux/endpoints/userApi';
-import SingleFileSelector from '../FileUploader/SingleFileSelector';
+import SingleFileSelector from '../../../../components/FileUploader/SingleFileSelector';
 import { useState } from 'react';
 import { DialogClose } from '@radix-ui/react-dialog';
 
@@ -38,13 +38,12 @@ const formSchema = z.object({
     designation: z.string().min(2),
     role: z.enum(['Admin', 'Management', 'Sells', 'Operation']),
     userStatus: z.enum(['Active', 'Deactivate']),
-    teamLead: z.string().optional(),
-    team: z.string().optional(),
-    address: z.string().optional(),
-    subArea: z.string().optional(),
-    district: z.string().optional(),
-    state: z.string().optional(),
-    country: z.string().optional(),
+    // teamLead: z.string().optional(),
+    // address: z.string().optional(),
+    // subArea: z.string().optional(),
+    // district: z.string().optional(),
+    // state: z.string().optional(),
+    // country: z.string().optional(),
 });
 
 export default function RegistrationContent(): React.ReactNode {
@@ -64,13 +63,12 @@ export default function RegistrationContent(): React.ReactNode {
             designation: '',
             role: 'Operation',
             userStatus: 'Active',
-            teamLead: '',
-            team: '',
-            address: '',
-            subArea: '',
-            district: '',
-            state: '',
-            country: '',
+            // teamLead: '',
+            // address: '',
+            // subArea: '',
+            // district: '',
+            // state: '',
+            // country: '',
         },
     });
 
@@ -132,14 +130,7 @@ export default function RegistrationContent(): React.ReactNode {
                 phoneNumber: '',
                 designation: '',
                 role: 'Operation',
-                userStatus: 'Active',
-                teamLead: '',
-                team: '',
-                address: '',
-                subArea: '',
-                district: '',
-                state: '',
-                country: '',
+                userStatus: 'Active'
             });
             setAvatar(null);
             setAvatarError(null);
@@ -256,6 +247,23 @@ export default function RegistrationContent(): React.ReactNode {
                                 </FormItem>
                             )}
                         />
+                        <FormField
+                            control={form.control}
+                            name="userName"
+                            render={({ field }) => (
+                                <FormItem className="w-full">
+                                    <FormLabel className="text-[#6B6B6B]">Username</FormLabel>
+                                    <FormControl>
+                                        <Input
+                                            {...field}
+                                            autoComplete="off"
+                                            placeholder="john_doe"
+                                        />
+                                    </FormControl>
+                                    <FormMessage />
+                                </FormItem>
+                            )}
+                        />
                     </div>
 
                     <div className="flex items-center gap-4">
@@ -305,126 +313,6 @@ export default function RegistrationContent(): React.ReactNode {
                                             <SelectItem value="Deactivate">Deactivate</SelectItem>
                                         </SelectContent>
                                     </Select>
-                                    <FormMessage />
-                                </FormItem>
-                            )}
-                        />
-                    </div>
-
-                    <div className="flex items-center gap-4">
-                        <FormField
-                            control={form.control}
-                            name="userName"
-                            render={({ field }) => (
-                                <FormItem className="w-full">
-                                    <FormLabel className="text-[#6B6B6B]">Username</FormLabel>
-                                    <FormControl>
-                                        <Input
-                                            {...field}
-                                            autoComplete="off"
-                                            placeholder="john_doe"
-                                        />
-                                    </FormControl>
-                                    <FormMessage />
-                                </FormItem>
-                            )}
-                        />
-                        <FormField
-                            control={form.control}
-                            name="teamLead"
-                            render={({ field }) => (
-                                <FormItem className="w-full">
-                                    <FormLabel className="text-[#6B6B6B]">Team Lead</FormLabel>
-                                    <FormControl>
-                                        <Input
-                                            {...field}
-                                            autoComplete="off"
-                                            placeholder="Team lead username"
-                                        />
-                                    </FormControl>
-                                    <FormMessage />
-                                </FormItem>
-                            )}
-                        />
-                    </div>
-
-                    <div className="flex items-center gap-4">
-                        <FormField
-                            control={form.control}
-                            name="address"
-                            render={({ field }) => (
-                                <FormItem className="w-full">
-                                    <FormLabel className="text-[#6B6B6B]">Address</FormLabel>
-                                    <FormControl>
-                                        <Input
-                                            {...field}
-                                            autoComplete="off"
-                                            placeholder="Mirpur-10"
-                                        />
-                                    </FormControl>
-                                    <FormMessage />
-                                </FormItem>
-                            )}
-                        />
-                        <FormField
-                            control={form.control}
-                            name="subArea"
-                            render={({ field }) => (
-                                <FormItem className="w-full">
-                                    <FormLabel className="text-[#6B6B6B]">Sub Area</FormLabel>
-                                    <FormControl>
-                                        <Input
-                                            {...field}
-                                            autoComplete="off"
-                                            placeholder="Shenpara"
-                                        />
-                                    </FormControl>
-                                    <FormMessage />
-                                </FormItem>
-                            )}
-                        />
-                    </div>
-
-                    <div className="flex items-center gap-4">
-                        <FormField
-                            control={form.control}
-                            name="district"
-                            render={({ field }) => (
-                                <FormItem className="w-full">
-                                    <FormLabel className="text-[#6B6B6B]">District</FormLabel>
-                                    <FormControl>
-                                        <Input {...field} autoComplete="off" placeholder="Dhaka" />
-                                    </FormControl>
-                                    <FormMessage />
-                                </FormItem>
-                            )}
-                        />
-                        <FormField
-                            control={form.control}
-                            name="state"
-                            render={({ field }) => (
-                                <FormItem className="w-full">
-                                    <FormLabel className="text-[#6B6B6B]">State</FormLabel>
-                                    <FormControl>
-                                        <Input {...field} autoComplete="off" placeholder="Dhaka" />
-                                    </FormControl>
-                                    <FormMessage />
-                                </FormItem>
-                            )}
-                        />
-                        <FormField
-                            control={form.control}
-                            name="country"
-                            render={({ field }) => (
-                                <FormItem className="w-full">
-                                    <FormLabel className="text-[#6B6B6B]">Country</FormLabel>
-                                    <FormControl>
-                                        <Input
-                                            {...field}
-                                            autoComplete="off"
-                                            placeholder="Bangladesh"
-                                        />
-                                    </FormControl>
                                     <FormMessage />
                                 </FormItem>
                             )}

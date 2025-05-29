@@ -1,13 +1,4 @@
-export type TUserRole = 'SUPER_ADMIN' | 'ADMIN' | 'PROJECT_MANAGER' | 'ENGINEER' | 'CLIENT';
-
-export type TUser = {
-  id: string,
-  firstName: string;
-  lastName: string;
-  email: string;
-  profileImage: string;
-  role: TUserRole;
-};
+export type TUserRole = 'Admin' | 'Management' | 'Sells' | 'Operation';
 
 export type TJwtPayload = {
   id: string;
@@ -24,7 +15,7 @@ export type TCurrentLoginUser = {
   lastName: string;
   email: string;
   avatar: string;
-  role: string;
+  role: TUserRole;
   iat: number;
   exp: number;
 };
@@ -47,8 +38,15 @@ export type TEmployee = {
   lastName: string
   userName: string
   phoneNumber: string
-  role: "Admin" | "Management" | "Sells" | "Operation"
-  userStatus: "Active" | "Deactivate"
+  role: TUserRole
+  userStatus: 'Active' | 'Deactivate'
+  team?: string
+  teamLead?: string
+  address?: string
+  subArea?: string
+  district?: string
+  state?: string
+  country?: string
   isBlocked: boolean
   isDeleted: boolean
   isPasswordChanged: boolean

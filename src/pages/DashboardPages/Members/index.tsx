@@ -72,9 +72,8 @@ export default function Members() {
             header: 'Status',
             cell: ({ row }) => (
                 <span
-                    className={`${
-                        row.original.status === 'Active' ? 'text-green-600' : 'text-red-600'
-                    }`}
+                    className={`${row.original.status === 'Active' ? 'text-green-600' : 'text-red-600'
+                        }`}
                 >
                     {row.original.status === 'Active' ? 'Active' : 'Deactive'}
                 </span>
@@ -90,7 +89,7 @@ export default function Members() {
     return (
         <section>
             <div className="mb-4">
-                <Headers title="Teams Management">
+                <Headers title="Members">
                     <div className="flex items-center gap-2">
                         <SearchInput
                             value={searchTerm}
@@ -107,7 +106,7 @@ export default function Members() {
                         <DialogWrapper
                             trigger={
                                 <Button>
-                                    <Plus className="mr-2 h-4 w-4" /> Add Team
+                                    <Plus className="mr-2 h-4 w-4" /> Add Member
                                 </Button>
                             }
                             content={<AddMember />}

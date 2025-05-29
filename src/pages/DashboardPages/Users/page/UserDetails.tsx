@@ -18,11 +18,11 @@ export default function UserDetails({ userId }: { userId: string }) {
           <div>
             {isLoading || isFetching ? (
               <div>
-                <Skeleton className="size-[164px] rounded-md mb-4" />
+                <Skeleton className="size-[164px] rounded-full mb-4" />
               </div>
             ) : (
-              <Avatar className="size-[164px] mb-4 rounded-md">
-                <AvatarImage src={userData?.data?.avatar} alt="avatar" className="rounded-md" />
+              <Avatar className="size-[164px] mb-4">
+                <AvatarImage src={userData?.data?.avatar} alt="avatar" />
                 <AvatarFallback className="bg-primary text-white font-semibold text-8xl">
                   {userData?.data?.firstName?.charAt(0)}
                   {userData?.data?.lastName?.charAt(0)}
