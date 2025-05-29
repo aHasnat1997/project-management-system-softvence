@@ -13,6 +13,10 @@ import Teams from '@/pages/DashboardPages/Teams';
 import Project from '@/pages/DashboardPages/Project';
 import CreateProject from '@/pages/DashboardPages/Project/page/CreateProject';
 import Members from '@/pages/DashboardPages/Members';
+import ProjectAssign from '@/pages/DashboardPages/ProjectAssign';
+import ProjectIssue from '@/pages/DashboardPages/ProjectIssue';
+import ProjectMessage from '@/pages/DashboardPages/ProjectMessage';
+import ProjectResource from '@/pages/DashboardPages/ProjectResource';
 
 export default function AppRoutes() {
     return (
@@ -43,6 +47,10 @@ export default function AppRoutes() {
                     </Route>
                     <Route path="team" element={<Teams />} />
                     <Route path="member" element={<Members />} />
+                    <Route path='project-assign' element={<ProjectAssign />} />
+                    <Route path='project-issue' element={<ProjectIssue />} />
+                    <Route path='project-message' element={<ProjectMessage />} />
+                    <Route path='project-resource' element={<ProjectResource />} />
                 </Route>
             </Routes>
         </>

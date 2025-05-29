@@ -30,7 +30,7 @@ export default function Project() {
       header: "Sells By",
       enableHiding: true,
       cell: ({ row }) => (
-        <span>{row.original.sellsBy.firstName} {row.original.sellsBy.lastName}</span>
+        <span>{row.original?.sellsBy?.firstName} {row.original?.sellsBy?.lastName}</span>
       ),
     },
     {
@@ -43,7 +43,7 @@ export default function Project() {
       header: "Assigned By",
       enableHiding: true,
       cell: ({ row }) => (
-        <span>{row.original.assignedBy.firstName} {row.original.assignedBy.lastName}</span>
+        <span>{row.original?.assignedBy?.firstName} {row.original?.assignedBy?.lastName}</span>
       ),
     },
     {
@@ -51,7 +51,7 @@ export default function Project() {
       header: "Lead By",
       enableHiding: true,
       cell: ({ row }) => (
-        <span>{row.original.leadBy.firstName} {row.original.leadBy.lastName}</span>
+        <span>{row.original?.leadBy?.firstName} {row.original?.leadBy?.lastName}</span>
       ),
     },
     {
@@ -104,7 +104,7 @@ export default function Project() {
             />
             <DialogWrapper
               trigger={
-                <Trash className="duration-150 hover:text-red-500 text-muted-foreground" />
+                <Trash className="duration-150 text-red-600 hover:text-primary" />
               }
               content={<DeleteProject projectId={row._id} />}
             />

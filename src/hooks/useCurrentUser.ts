@@ -5,5 +5,5 @@ export default function useCurrentUser(): TCurrentLoginUser | null {
   const loginUser = JSON.parse(storedData!).user;
   const loginUserParseData = JSON.parse(loginUser);
 
-  return loginUserParseData;
+  return loginUserParseData as TCurrentLoginUser | null;
 };

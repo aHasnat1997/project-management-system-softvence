@@ -1,6 +1,6 @@
 import { DataTable } from "@/components/DataTable/dataTable";
 import DialogWrapper from "@/components/DialogContents";
-import RegistrationContent from "@/components/DialogContents/registration";
+import RegistrationContent from "./page/registration";
 import Headers from "@/components/Headers";
 import SearchInput from "@/components/SearchInput";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
@@ -84,7 +84,7 @@ export default function UsersProfile() {
         return <div>
           <Switch
             defaultChecked={row.original.userStatus === "Active" ? true : false}
-            onCheckedChange={() => handleUserStatusChange(row.original._id, row.original.userStatus)}
+            onCheckedChange={() => handleUserStatusChange(row.original?._id, row.original?.userStatus)}
             disabled={isUpdateLoading}
           />
         </div>
@@ -139,7 +139,7 @@ export default function UsersProfile() {
             />
             <DialogWrapper
               trigger={
-                <Trash className="duration-150 hover:text-red-500 text-muted-foreground" />
+                <Trash className="duration-150 text-red-600 hover:text-primary" />
               }
               content={<DeleteUser userId={row._id} />}
             />
